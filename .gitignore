@@ -361,3 +361,14 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Build artifacts
+**/bin/
+**/obj/
+*.user
+
+# Android build outputs
+Client/ClientApp/android/
+
+# App settings (локальні секрети)
+appsettings.json
