@@ -1,31 +1,31 @@
-# ManagementSystem
+п»ї# ManagementSystem
 
-Система для управління **Users**, **Items**, **Actions** з MVC-адмін-панеллю (ASP.NET Core) та мобільним .NET MAUI застосунком (MVVM).
+РЎРёСЃС‚РµРјР° РґР»СЏ СѓРїСЂР°РІР»С–РЅРЅСЏ **Users**, **Items**, **Actions** Р· MVC-Р°РґРјС–РЅ-РїР°РЅРµР»Р»СЋ (ASP.NET Core) С‚Р° РјРѕР±С–Р»СЊРЅРёРј .NET MAUI Р·Р°СЃС‚РѕСЃСѓРЅРєРѕРј (MVVM).
 
-## Вимоги
+## Р’РёРјРѕРіРё
 - Visual Studio 2022 Community
 - .NET 8 SDK
-- Робочі навантаження: ASP.NET and web development, .NET MAUI
+- Р РѕР±РѕС‡С– РЅР°РІР°РЅС‚Р°Р¶РµРЅРЅСЏ: ASP.NET and web development, .NET MAUI
 - Android Emulator API 33
 
-## Структура
+## РЎС‚СЂСѓРєС‚СѓСЂР°
 ManagementSystem/
 Server/
 ServerApp/ # ASP.NET Core (Empty, .NET 8)
 Client/
-ClientApp/ # .NET MAUI App (.NET 8), MVVM ( папка ViewModels )
+ClientApp/ # .NET MAUI App (.NET 8), MVVM ( РїР°РїРєР° ViewModels )
 
 markdown
-Копіювати код
+РљРѕРїС–СЋРІР°С‚Рё РєРѕРґ
 
-## Налаштування
-1. Клонувати репозиторій або відкрити solution `ManagementSystem.sln`.
-2. Запустити `Server/ServerApp` (F5) — порожня сторінка/Hello World.
-3. Запустити `Client/ClientApp` на Android-емуляторі (API 33).
+## РќР°Р»Р°С€С‚СѓРІР°РЅРЅСЏ
+1. РљР»РѕРЅСѓРІР°С‚Рё СЂРµРїРѕР·РёС‚РѕСЂС–Р№ Р°Р±Рѕ РІС–РґРєСЂРёС‚Рё solution `ManagementSystem.sln`.
+2. Р—Р°РїСѓСЃС‚РёС‚Рё `Server/ServerApp` (F5) вЂ” РїРѕСЂРѕР¶РЅСЏ СЃС‚РѕСЂС–РЅРєР°/Hello World.
+3. Р—Р°РїСѓСЃС‚РёС‚Рё `Client/ClientApp` РЅР° Android-РµРјСѓР»СЏС‚РѕСЂС– (API 33).
 
-## Предметна область
-Підтримує 3 таблиці: **Users**, **Items**, **Actions** (можна адаптувати під освіту/бібліотеку/готель тощо).
+## РџСЂРµРґРјРµС‚РЅР° РѕР±Р»Р°СЃС‚СЊ
+РџС–РґС‚СЂРёРјСѓС” 3 С‚Р°Р±Р»РёС†С–: **Users**, **Items**, **Actions** (РјРѕР¶РЅР° Р°РґР°РїС‚СѓРІР°С‚Рё РїС–Рґ РѕСЃРІС–С‚Сѓ/Р±С–Р±Р»С–РѕС‚РµРєСѓ/РіРѕС‚РµР»СЊ С‚РѕС‰Рѕ).
 
 ## Git
-- `main` — стабільна гілка.
-- Розробка — через feature-бренчі з PR.
+- `main` вЂ” СЃС‚Р°Р±С–Р»СЊРЅР° РіС–Р»РєР°.
+- Р РѕР·СЂРѕР±РєР° вЂ” С‡РµСЂРµР· feature-Р±СЂРµРЅС‡С– Р· PR.
