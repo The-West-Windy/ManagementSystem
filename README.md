@@ -1,6 +1,6 @@
 ﻿# ManagementSystem
 
-Система для управління **Users**, **Items**, **Actions** з MVC-адмін-панеллю (ASP.NET Core) та мобільним .NET MAUI застосунком (MVVM).
+Система для управління **Librarians**, **Books**, **BorrowRequests** з MVC-адмін-панеллю (ASP.NET Core) та мобільним .NET MAUI застосунком (MVVM).
 
 ## Вимоги
 - Visual Studio 2022 Community
@@ -15,16 +15,13 @@ ServerApp/ # ASP.NET Core (Empty, .NET 8)
 Client/
 ClientApp/ # .NET MAUI App (.NET 8), MVVM ( папка ViewModels )
 
-markdown
-Копіювати код
-
 ## Налаштування
 1. Клонувати репозиторій або відкрити solution `ManagementSystem.sln`.
 2. Запустити `Server/ServerApp` (F5) — порожня сторінка/Hello World.
 3. Запустити `Client/ClientApp` на Android-емуляторі (API 33).
 
 ## Предметна область
-Підтримує 3 таблиці: **Users**, **Items**, **Actions** (можна адаптувати під освіту/бібліотеку/готель тощо).
+Предметна область - бібліотека, база даних якої підтримує 3 таблиці: **Librarians**, **Books**, **BorrowRequests**.
 
 ## Git
 - `main` — стабільна гілка.
