@@ -5,7 +5,7 @@
 --   СУБД: Microsoft SQL Server
 -- ============================================
 
--- Якщо база ще не існує — створити
+
 IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'LibrarySystem')
 BEGIN
     CREATE DATABASE LibrarySystem;
@@ -15,19 +15,14 @@ GO
 USE LibrarySystem;
 GO
 
--- ============================================
---  Видалення таблиць, якщо вони існують
--- ============================================
+
 IF OBJECT_ID('dbo.BorrowRequests', 'U') IS NOT NULL DROP TABLE dbo.BorrowRequests;
 IF OBJECT_ID('dbo.Books', 'U') IS NOT NULL DROP TABLE dbo.Books;
 IF OBJECT_ID('dbo.Librarians', 'U') IS NOT NULL DROP TABLE dbo.Librarians;
 GO
 
--- ============================================
---  Створення таблиць
--- ============================================
 
--- (1) Таблиця бібліотекарів
+
 CREATE TABLE Librarians (
     ID INT IDENTITY(1,1) PRIMARY KEY,
     Name NVARCHAR(100) NOT NULL,
@@ -35,7 +30,6 @@ CREATE TABLE Librarians (
     PasswordHash NVARCHAR(255) NOT NULL
 );
 
--- (2) Таблиця книг
 CREATE TABLE Books (
     ID INT IDENTITY(1,1) PRIMARY KEY,
     Title NVARCHAR(200) NOT NULL,
@@ -43,7 +37,6 @@ CREATE TABLE Books (
     Status NVARCHAR(20) CHECK (Status IN ('Available', 'Borrowed')) DEFAULT 'Available'
 );
 
--- (3) Таблиця запитів на позичення
 CREATE TABLE BorrowRequests (
     ID INT IDENTITY(1,1) PRIMARY KEY,
     LibrarianID INT NOT NULL,
@@ -57,9 +50,7 @@ CREATE TABLE BorrowRequests (
 );
 GO
 
--- ============================================
---  Вставка тестових даних
--- ============================================
+
 
 INSERT INTO Librarians (Name, Email, PasswordHash)
 VALUES
@@ -78,9 +69,6 @@ VALUES
 (2, 3, 'Pending');
 GO
 
--- ============================================
---  Перевірка вмісту
--- ============================================
 SELECT * FROM Librarians;
 SELECT * FROM Books;
 SELECT * FROM BorrowRequests;
