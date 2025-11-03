@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Admin Login";
+}
+
+<div style="max-width:400px; margin:100px auto; padding:20px; border:1px solid #ccc; border-radius:10px;">
+    <h2>🔐 Admin Login</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <p style="color:red;">@ViewBag.Error</p>
+    }
+
+    <form method="post" action="/auth/login">
+        <div style="margin-bottom:10px;">
+            <label>Username:</label><br />
+            <input type="text" name="username" required style="width:100%;" />
+        </div>
+
+        <div style="margin-bottom:10px;">
+            <label>Password:</label><br />
+            <input type="password" name="password" required style="width:100%;" />
+        </div>
+
+        <button type="submit" style="width:100%; background-color:#007bff; color:white; padding:8px; border:none; border-radius:5px;">
+            Login
+        </button>
+    </form>
+</div>
