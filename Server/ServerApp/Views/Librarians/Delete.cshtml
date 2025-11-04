@@ -1,0 +1,20 @@
+﻿@model ServerApp.Models.Librarian
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Delete Librarian";
+}
+
+<h2>Delete Librarian</h2>
+
+<h4>Are you sure you want to delete this librarian?</h4>
+<div>
+    <h5>@Model.Name</h5>
+    <p>Email: @Model.Email</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="ID" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index")">Cancel</a>
+</form>

@@ -1,0 +1,21 @@
+﻿@model ServerApp.Models.Book
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Delete Book";
+}
+
+<h2>Delete Book</h2>
+
+<h4>Are you sure you want to delete this book?</h4>
+<div>
+    <h5>@Model.Title</h5>
+    <p>Author: @Model.Author</p>
+    <p>Status: @Model.Status</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="ID" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index")">Cancel</a>
+</form>

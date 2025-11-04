@@ -1,0 +1,18 @@
+﻿@model ServerApp.Models.Librarian
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Librarian Details";
+}
+
+<h2>Librarian Details</h2>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Name</h5>
+        <p class="card-text"><strong>Email:</strong> @Model.Email</p>
+        <p class="card-text"><strong>Password Hash:</strong> @Model.PasswordHash</p>
+    </div>
+</div>
+
+<a class="btn btn-secondary" href="@Url.Action("Index")">Back to list</a>

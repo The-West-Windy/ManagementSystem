@@ -1,0 +1,22 @@
+﻿@model ServerApp.Models.BorrowRequest
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Delete Borrow Request";
+}
+
+<h2>Delete Borrow Request</h2>
+
+<h4>Are you sure you want to delete this request?</h4>
+<div>
+    <p><strong>Librarian:</strong> @Model.Librarian?.Name</p>
+    <p><strong>Book:</strong> @Model.Book?.Title</p>
+    <p><strong>Request Date:</strong> @Model.RequestDate.ToString("yyyy-MM-dd")</p>
+    <p><strong>Status:</strong> @Model.Status</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="ID" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index")">Cancel</a>
+</form>
