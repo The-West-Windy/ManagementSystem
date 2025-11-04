@@ -9,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 // ==================== SERVICES ====================
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddEndpointsApiExplorer(); // для Swagger
+builder.Services.AddSwaggerGen();
+
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
@@ -60,9 +63,17 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseStaticFiles();
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "ServerApp API V1");
+    c.RoutePrefix = "swagger"; // UI буде доступний за /swagger
+});
 
 app.UseRouting();
 
