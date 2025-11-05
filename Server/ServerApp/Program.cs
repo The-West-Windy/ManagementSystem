@@ -54,6 +54,8 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddAuthorization();
+
 // ==================== BUILD ====================
 
 var app = builder.Build();
@@ -79,6 +81,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllers();
 
 // ==================== ROUTES ====================
 
