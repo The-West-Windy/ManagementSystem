@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ServerApp.Models;
 
@@ -11,9 +12,11 @@ using ServerApp.Models;
 namespace ServerApp.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251105081209_AddRoleToLibrarians")]
+    partial class AddRoleToLibrarians
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,14 +165,6 @@ namespace ServerApp.Migrations
                             Name = "Ігор Петренко",
                             PasswordHash = "hash456",
                             Role = "User"
-                        },
-                        new
-                        {
-                            ID = 3,
-                            Email = "admin@library.com",
-                            Name = "Admin",
-                            PasswordHash = "admin123",
-                            Role = "Admin"
                         });
                 });
 

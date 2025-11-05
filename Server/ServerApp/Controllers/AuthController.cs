@@ -6,6 +6,8 @@ using ServerApp.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using ServerApp.Models.DTOs;
+
 
 [Route("auth")]
 [AllowAnonymous] // дозволяє доступ без JWT
@@ -31,14 +33,20 @@ public class AuthController : Controller
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSuperSuperSecretKey_123456789!"));
             var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
-            var tokenOptions = new JwtSecurityToken(
-    issuer: "ServerApp",
-    audience: "ServerAppUsers",
-    claims: new List<Claim>(),
-    expires: DateTime.Now.AddHours(1),
-    signingCredentials: signinCredentials
-);
+            // ✅ додаємо роль у claims (як в ApiLogin)
+            var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, username),
+            new Claim(ClaimTypes.Role, "Admin")
+        };
 
+            var tokenOptions = new JwtSecurityToken(
+                issuer: "ServerApp",
+                audience: "ServerAppUsers",
+                claims: claims,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: signinCredentials
+            );
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
@@ -55,4 +63,37 @@ public class AuthController : Controller
         ViewBag.Error = "Invalid username or password";
         return View();
     }
+
+    [HttpPost("api-login")]
+    [AllowAnonymous]
+    public IActionResult ApiLogin([FromBody] LoginDto login)
+    {
+        if (login.Username == AdminCredentials.Username && login.Password == AdminCredentials.Password)
+        {
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSuperSuperSecretKey_123456789!"));
+            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+
+            // ✅ додаємо роль Admin у claims
+            var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, login.Username),
+            new Claim(ClaimTypes.Role, "Admin")
+        };
+
+            var tokenOptions = new JwtSecurityToken(
+                issuer: "ServerApp",
+                audience: "ServerAppUsers",
+                claims: claims,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: signinCredentials
+            );
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+            return Ok(new { token = tokenString });
+        }
+
+        return Unauthorized("Invalid credentials");
+    }
+
+
 }

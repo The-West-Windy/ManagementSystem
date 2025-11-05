@@ -16,7 +16,8 @@ namespace ServerApp.Models
         {
             modelBuilder.Entity<Librarian>().HasData(
                 new Librarian { ID = 1, Name = "Олена Коваль", Email = "olena.koval@library.com", PasswordHash = "hash123" },
-                new Librarian { ID = 2, Name = "Ігор Петренко", Email = "ihor.petrenko@library.com", PasswordHash = "hash456" }
+                new Librarian { ID = 2, Name = "Ігор Петренко", Email = "ihor.petrenko@library.com", PasswordHash = "hash456" },
+                new Librarian { ID = 3, Name = "Admin", Email = "admin@library.com", PasswordHash = "admin123", Role = "Admin" } // 🔹 Додано
             );
 
             modelBuilder.Entity<Book>().HasData(
@@ -52,6 +53,8 @@ namespace ServerApp.Models
         public string Name { get; set; } = "";
         public string Email { get; set; } = "";
         public string PasswordHash { get; set; } = "";
+
+        public string Role { get; set; } = "User";
         public ICollection<BorrowRequest>? BorrowRequests { get; set; }
     }
 
