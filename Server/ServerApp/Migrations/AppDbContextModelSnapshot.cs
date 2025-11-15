@@ -148,14 +148,14 @@ namespace ServerApp.Migrations
                             ID = 1,
                             Email = "olena.koval@library.com",
                             Name = "Олена Коваль",
-                            PasswordHash = "hash123"
+                            PasswordHash = "$2b$12$C6UzMDM.H6dfI/f/IK6G7.ueWnACpPiiPMTKoXoB4GAibl0JZ8D4e"
                         },
                         new
                         {
                             ID = 2,
                             Email = "ihor.petrenko@library.com",
                             Name = "Ігор Петренко",
-                            PasswordHash = "hash456"
+                            PasswordHash = "$2b$12$C6UzMDM.H6dfI/f/IK6G7.NMNsvcRC5TBpBzR40cz1K3pzGNuHPgi"
                         });
                 });
 

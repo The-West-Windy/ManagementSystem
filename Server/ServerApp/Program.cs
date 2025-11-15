@@ -19,9 +19,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // ======== JWT Authentication Setup ========
 
-var jwtSecretKey = "MySuperSuperSuperSecretKey_123456789!";
-var issuer = "ServerApp";
-var audience = "ServerAppUsers";
+var jwtSection = builder.Configuration.GetSection("Jwt");
+var jwtSecretKey = jwtSection["Key"] ?? throw new InvalidOperationException("JWT secret key is not configured");
+var issuer = jwtSection["Issuer"] ?? throw new InvalidOperationException("JWT issuer is not configured");
+var audience = jwtSection["Audience"] ?? throw new InvalidOperationException("JWT audience is not configured");
 
 builder.Services.AddAuthentication(options =>
 {
