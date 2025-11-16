@@ -1,6 +1,8 @@
-﻿using ClientApp.ViewModels;
+﻿using ClientApp.Services;
+using ClientApp.ViewModels;
 using ClientApp.Views;
 using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Devices;
 
 namespace ClientApp
 {
@@ -16,6 +18,16 @@ namespace ClientApp
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
+            var apiBaseAddress = DeviceInfo.Platform == DevicePlatform.Android
+                ? "http://10.0.2.2:5253/"
+                : "http://localhost:5253/";
+
+            builder.Services.AddSingleton(new HttpClient
+            {
+                BaseAddress = new Uri(apiBaseAddress)
+            });
+
+            builder.Services.AddSingleton<ApiService>();
 
             builder.Services.AddSingleton<AppShell>();
 

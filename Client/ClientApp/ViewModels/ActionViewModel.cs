@@ -1,20 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientApp.Models;
-using static Azure.Core.HttpHeader;
+using ClientApp.Services;
+using ClientApp.Views;
 
 namespace ClientApp.ViewModels
 {
     [QueryProperty(nameof(BookTitle), nameof(BookTitle))]
+    [QueryProperty(nameof(BookId), nameof(BookId))]
     public partial class ActionViewModel : BaseViewModel
     {
+        private readonly ApiService _apiService;
+
         [ObservableProperty]
         private string bookTitle = string.Empty;
+
+        [ObservableProperty]
+        private int bookId;
 
         [ObservableProperty]
         private string borrowerName = string.Empty;
@@ -25,8 +27,9 @@ namespace ClientApp.ViewModels
         [ObservableProperty]
         private string statusMessage = string.Empty;
 
-        public ActionViewModel()
+        public ActionViewModel(ApiService apiService)
         {
+            _apiService = apiService;
             Title = "Borrow Request";
         }
 
@@ -43,24 +46,51 @@ namespace ClientApp.ViewModels
                 IsBusy = true;
                 StatusMessage = string.Empty;
 
-                if (string.IsNullOrWhiteSpace(BookTitle) || string.IsNullOrWhiteSpace(BorrowerName))
+                if (BookId <= 0)
                 {
-                    StatusMessage = "Please provide a book title and borrower name.";
+                    StatusMessage = "Book information is missing.";
                     return;
                 }
 
+                if (string.IsNullOrWhiteSpace(BorrowerName))
+                {
+                    StatusMessage = "Please provide a borrower name.";
+                    return;
+                }
+
+                var librarianId = _apiService.GetLibrarianIdFromToken();
+                if (librarianId is null)
+                {
+                    StatusMessage = "Session expired. Please log in again.";
+                    await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
+                    return;
+                }
+
+                var statusText = string.IsNullOrWhiteSpace(Notes) ? "Pending" : Notes.Trim();
+                statusText = string.IsNullOrWhiteSpace(BorrowerName)
+                    ? statusText
+                    : $"{statusText} ({BorrowerName.Trim()})";
+
                 var request = new BorrowRequest
                 {
-                    BookTitle = BookTitle,
-                    BorrowerName = BorrowerName,
-                    Notes = Notes,
-                    RequestedOn = DateTime.UtcNow
+                    BookID = BookId,
+                    LibrarianID = librarianId.Value,
+                    Status = statusText
                 };
 
-                await Task.Delay(500);
-                StatusMessage = $"Borrow request for '{request.BookTitle}' recorded.";
+                await _apiService.CreateBorrowRequestAsync(request);
+                StatusMessage = $"Borrow request for '{BookTitle}' submitted.";
                 await Shell.Current.DisplayAlert("Borrow Request", StatusMessage, "OK");
                 await Shell.Current.GoToAsync("..", true);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                StatusMessage = "Session expired. Please log in again.";
+                await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Failed to submit request: {ex.Message}";
             }
             finally
             {
