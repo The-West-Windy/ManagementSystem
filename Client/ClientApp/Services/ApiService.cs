@@ -23,22 +23,34 @@ namespace ClientApp.Services
 
         public async Task<(bool Success, string? ErrorMessage)> LoginAsync(string email, string password)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/auth/login", new { email, password });
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                var error = await response.Content.ReadAsStringAsync();
-                return (false, GetErrorMessage(response.StatusCode, error));
-            }
+                var response = await _httpClient.PostAsJsonAsync("api/auth/login", new { email, password });
+                if (!response.IsSuccessStatusCode)
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    return (false, GetErrorMessage(response.StatusCode, error));
+                }
 
-            var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
-            if (string.IsNullOrWhiteSpace(authResponse?.Token))
+                var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
+                if (string.IsNullOrWhiteSpace(authResponse?.Token))
+                {
+                    return (false, "The API did not return a JWT token.");
+                }
+
+                Preferences.Set(TokenPreferenceKey, authResponse.Token);
+                SetAuthorizationHeader(authResponse.Token);
+                return (true, null);
+            }
+            catch (TaskCanceledException)
             {
-                return (false, "The API did not return a JWT token.");
+                var endpoint = _httpClient.BaseAddress?.ToString()?.TrimEnd('/') ?? "API";
+                return (false, $"The API at {endpoint} did not respond in time. Please verify the server is running and reachable.");
             }
-
-            Preferences.Set(TokenPreferenceKey, authResponse.Token);
-            SetAuthorizationHeader(authResponse.Token);
-            return (true, null);
+            catch (HttpRequestException ex)
+            {
+                return (false, $"Unable to reach the server: {ex.Message}");
+            }
         }
 
         public async Task<IReadOnlyList<Book>> GetBooksAsync()

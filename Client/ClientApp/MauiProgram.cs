@@ -3,6 +3,7 @@ using ClientApp.ViewModels;
 using ClientApp.Views;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Devices;
+using System.Net.Http;
 
 namespace ClientApp
 {
@@ -23,12 +24,16 @@ namespace ClientApp
                 ? "http://10.0.2.2:5253/"
                 : "http://localhost:5253/";
 
-            builder.Services.AddSingleton(new HttpClient
-            {
-                BaseAddress = new Uri(apiBaseAddress)
-            });
-
-            builder.Services.AddSingleton<ApiService>();
+            builder.Services
+                .AddHttpClient<ApiService>(client =>
+                {
+                    client.BaseAddress = new Uri(apiBaseAddress);
+                    client.Timeout = TimeSpan.FromSeconds(10);
+                })
+                .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+                {
+                    ConnectTimeout = TimeSpan.FromSeconds(5)
+                });
 
             builder.Services.AddSingleton<AppShell>();
 
