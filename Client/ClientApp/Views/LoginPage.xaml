@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:ClientApp.ViewModels"
+             x:Class="ClientApp.Views.LoginPage"
+             x:DataType="viewModels:LoginViewModel"
+             Title="Login">
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="16">
+            <Label Text="Library Access" Style="{StaticResource Headline}" />
+            <Label Text="Sign in as librarian to manage borrow requests." Style="{StaticResource SubHeadline}" />
+
+            <Entry Placeholder="Email" Keyboard="Email" Text="{Binding Email}" />
+            <Entry Placeholder="Password" IsPassword="True" Text="{Binding Password}" />
+
+            <Button Text="Login" Command="{Binding LoginCommand}" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            <Label Text="{Binding StatusMessage}" TextColor="Gray" LineBreakMode="WordWrap" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
