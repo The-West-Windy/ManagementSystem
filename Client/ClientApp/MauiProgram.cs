@@ -23,12 +23,11 @@ namespace ClientApp
                 ? "http://10.0.2.2:5253/"
                 : "http://localhost:5253/";
 
-            builder.Services.AddSingleton(new HttpClient
+            builder.Services.AddHttpClient<ApiService>(client =>
             {
-                BaseAddress = new Uri(apiBaseAddress)
+                client.BaseAddress = new Uri(apiBaseAddress);
+                client.Timeout = TimeSpan.FromSeconds(15);
             });
-
-            builder.Services.AddSingleton<ApiService>();
 
             builder.Services.AddSingleton<AppShell>();
 
