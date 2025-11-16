@@ -15,8 +15,20 @@ namespace ServerApp.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Librarian>().HasData(
-                new Librarian { ID = 1, Name = "Олена Коваль", Email = "olena.koval@library.com", PasswordHash = "hash123" },
-                new Librarian { ID = 2, Name = "Ігор Петренко", Email = "ihor.petrenko@library.com", PasswordHash = "hash456" }
+                new Librarian
+                {
+                    ID = 1,
+                    Name = "Олена Коваль",
+                    Email = "olena.koval@library.com",
+                    PasswordHash = "$2b$12$C6UzMDM.H6dfI/f/IK6G7.ueWnACpPiiPMTKoXoB4GAibl0JZ8D4e"
+                },
+                new Librarian
+                {
+                    ID = 2,
+                    Name = "Ігор Петренко",
+                    Email = "ihor.petrenko@library.com",
+                    PasswordHash = "$2b$12$C6UzMDM.H6dfI/f/IK6G7.NMNsvcRC5TBpBzR40cz1K3pzGNuHPgi"
+                }
             );
 
             modelBuilder.Entity<Book>().HasData(
