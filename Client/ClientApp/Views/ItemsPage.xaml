@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ClientApp.ViewModels"
+             x:DataType="vm:ItemsViewModel"
+             x:Class="ClientApp.Views.ItemsPage"
+             Title="Каталог книг">
+    <VerticalStackLayout Padding="12" Spacing="12">
+        <Label Text="Книги" FontSize="24" FontAttributes="Bold" />
+        <Button Text="Оновити" Command="{Binding RefreshCommand}" />
+
+        <CollectionView ItemsSource="{Binding Books}"
+                        SelectionMode="Single"
+                        SelectedItem="{Binding SelectedBook, Mode=TwoWay}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame BorderColor="LightGray" CornerRadius="8" Padding="12" Margin="0,0,0,8">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Title}" FontAttributes="Bold" />
+                            <Label Text="{Binding Author}" FontSize="14" />
+                            <Label Text="Статус: Недоступна" TextColor="Red">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding IsAvailable}" Value="True">
+                                        <Setter Property="TextColor" Value="DarkGreen" />
+                                        <Setter Property="Text" Value="Статус: Доступна" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button Text="Створити запит на видачу" Command="{Binding CreateActionCommand}" />
+        <Label TextColor="Gray" FontAttributes="Italic" Text="{Binding StatusMessage}" />
+    </VerticalStackLayout>
+</ContentPage>

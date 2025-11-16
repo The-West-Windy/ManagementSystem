@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ClientApp.ViewModels"
+             x:DataType="vm:ActionViewModel"
+             x:Class="ClientApp.Views.ActionPage"
+             Title="Новий запит на видачу">
+    <ScrollView>
+        <VerticalStackLayout Padding="18" Spacing="12">
+            <Label Text="Запит на видачу книги" FontSize="24" FontAttributes="Bold" />
+            <Label Text="{Binding SelectedBookTitle, StringFormat='Книга: {0}'}" />
+
+            <Entry Placeholder="Ім’я читача" Text="{Binding BorrowerName}" />
+            <Editor Placeholder="Примітки" Text="{Binding Notes}" AutoSize="TextChanges" />
+
+            <Button Text="Створити запит" Command="{Binding SubmitCommand}" />
+            <Label TextColor="Gray" FontAttributes="Italic" Text="{Binding StatusMessage}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

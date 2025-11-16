@@ -15,6 +15,14 @@ namespace ClientApp
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            builder.Services.AddSingleton<ViewModels.LoginViewModel>();
+            builder.Services.AddSingleton<ViewModels.ItemsViewModel>();
+            builder.Services.AddTransient<ViewModels.ActionViewModel>();
+
+            builder.Services.AddSingleton<Views.LoginPage>();
+            builder.Services.AddSingleton<Views.ItemsPage>();
+            builder.Services.AddTransient<Views.ActionPage>();
+
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
