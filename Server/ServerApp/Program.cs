@@ -69,10 +69,17 @@ builder.Services.AddAuthentication(options =>
     {
         OnMessageReceived = context =>
         {
-            if (context.Request.Cookies.ContainsKey("jwt-token"))
+            var requestPath = context.HttpContext.Request.Path;
+
+            // Адмін-панель продовжує використовувати JWT із cookie, але API-ендпоінти
+            // (/api/...) вимагають заголовок Authorization, щоб Swagger/Postman
+            // не могли обходити процедуру логіну.
+            if (!requestPath.StartsWithSegments("/api") &&
+                context.Request.Cookies.TryGetValue("jwt-token", out var token))
             {
-                context.Token = context.Request.Cookies["jwt-token"];
+                context.Token = token;
             }
+
             return Task.CompletedTask;
         }
     };
