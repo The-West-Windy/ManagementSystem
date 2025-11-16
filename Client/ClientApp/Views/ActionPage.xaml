@@ -10,7 +10,7 @@
             <Label Text="Create Borrow Request" Style="{StaticResource Headline}" />
             <Label Text="Provide the details to let readers borrow a book." Style="{StaticResource SubHeadline}" />
 
-            <Entry Placeholder="Book title" Text="{Binding BookTitle}" />
+            <Entry Placeholder="Book title" Text="{Binding BookTitle}" IsReadOnly="True" />
             <Entry Placeholder="Borrower name" Text="{Binding BorrowerName}" />
             <Editor Placeholder="Notes" HeightRequest="120" Text="{Binding Notes}" />
 

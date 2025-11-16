@@ -1,11 +1,14 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ClientApp.Services;
 using ClientApp.Views;
 
 namespace ClientApp.ViewModels
 {
     public partial class LoginViewModel : BaseViewModel
     {
+        private readonly ApiService _apiService;
+
         [ObservableProperty]
         private string email = string.Empty;
 
@@ -15,8 +18,9 @@ namespace ClientApp.ViewModels
         [ObservableProperty]
         private string statusMessage = string.Empty;
 
-        public LoginViewModel()
+        public LoginViewModel(ApiService apiService)
         {
+            _apiService = apiService;
             Title = "Librarian Login";
         }
 
@@ -39,10 +43,19 @@ namespace ClientApp.ViewModels
                     return;
                 }
 
-                await Task.Delay(500);
-                StatusMessage = "Logged in as librarian. Redirecting to books...";
+                var (success, error) = await _apiService.LoginAsync(Email, Password);
+                if (!success)
+                {
+                    StatusMessage = error ?? "Unable to log in.";
+                    return;
+                }
 
-                await Shell.Current.GoToAsync(nameof(ItemsPage));
+                StatusMessage = "Login successful. Loading books...";
+                await Shell.Current.GoToAsync($"//{nameof(ItemsPage)}");
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Login failed: {ex.Message}";
             }
             finally
             {

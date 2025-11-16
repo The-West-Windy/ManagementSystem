@@ -1,18 +1,25 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientApp.Models;
+using ClientApp.Services;
 using ClientApp.Views;
 
 namespace ClientApp.ViewModels
 {
     public partial class ItemsViewModel : BaseViewModel
     {
+        private readonly ApiService _apiService;
+
         public ObservableCollection<Book> Books { get; } = new();
 
-        public ItemsViewModel()
+        [ObservableProperty]
+        private string statusMessage = string.Empty;
+
+        public ItemsViewModel(ApiService apiService)
         {
+            _apiService = apiService;
             Title = "Library Catalog";
         }
 
@@ -27,20 +34,23 @@ namespace ClientApp.ViewModels
             try
             {
                 IsBusy = true;
+                StatusMessage = string.Empty;
                 Books.Clear();
 
-                await Task.Delay(300);
-                var seed = new List<Book>
-                {
-                    new() { Title = "The Pragmatic Programmer", Author = "Andrew Hunt", Description = "Modern craftsmanship for developers." },
-                    new() { Title = "Clean Code", Author = "Robert C. Martin", Description = "Guidelines for readable, maintainable code." },
-                    new() { Title = "Domain-Driven Design", Author = "Eric Evans", Description = "Strategic and tactical design patterns." }
-                };
-
-                foreach (var book in seed)
+                var books = await _apiService.GetBooksAsync();
+                foreach (var book in books)
                 {
                     Books.Add(book);
                 }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                StatusMessage = "Session expired. Please log in again.";
+                await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Failed to load books: {ex.Message}";
             }
             finally
             {
@@ -53,7 +63,8 @@ namespace ClientApp.ViewModels
         {
             var query = new Dictionary<string, object?>
             {
-                ["BookTitle"] = book?.Title ?? string.Empty
+                ["BookTitle"] = book?.Title ?? string.Empty,
+                ["BookId"] = book?.Id ?? 0
             };
 
             await Shell.Current.GoToAsync(nameof(ActionPage), query);
