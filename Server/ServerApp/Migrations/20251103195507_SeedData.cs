@@ -86,8 +86,8 @@ namespace ServerApp.Migrations
                 columns: new[] { "ID", "Email", "Name", "PasswordHash" },
                 values: new object[,]
                 {
-                    { 1, "olena.koval@library.com", "Олена Коваль", "hash123" },
-                    { 2, "ihor.petrenko@library.com", "Ігор Петренко", "hash456" }
+                    { 1, "olena.koval@library.com", "Олена Коваль", "$2b$12$C6UzMDM.H6dfI/f/IK6G7.ueWnACpPiiPMTKoXoB4GAibl0JZ8D4e" },
+                    { 2, "ihor.petrenko@library.com", "Ігор Петренко", "$2a$11$BJ6xZCQBBYXQLDjed75FPeFuquR7YDrn.EI47VkK0j6v9.3fMT6f6" }
                 });
 
             migrationBuilder.InsertData(

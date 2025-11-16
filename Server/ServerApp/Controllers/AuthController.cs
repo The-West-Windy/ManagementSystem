@@ -1,7 +1,7 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
 using ServerApp.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -28,16 +28,21 @@ public class AuthController : Controller
     {
         if (username == AdminCredentials.Username && password == AdminCredentials.Password)
         {
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSuperSuperSecretKey_123456789!"));
+            var jwtSection = _configuration.GetSection("Jwt");
+            var issuer = jwtSection["Issuer"] ?? throw new InvalidOperationException("JWT issuer is not configured");
+            var audience = jwtSection["Audience"] ?? throw new InvalidOperationException("JWT audience is not configured");
+            var key = jwtSection["Key"] ?? throw new InvalidOperationException("JWT key is not configured");
+
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
             var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
             var tokenOptions = new JwtSecurityToken(
-    issuer: "ServerApp",
-    audience: "ServerAppUsers",
-    claims: new List<Claim>(),
-    expires: DateTime.Now.AddHours(1),
-    signingCredentials: signinCredentials
-);
+        issuer: issuer,
+                audience: audience,
+                claims: new List<Claim>(),
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: signinCredentials
+            );
 
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
