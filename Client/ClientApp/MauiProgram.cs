@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using ClientApp.ViewModels;
+using ClientApp.Views;
+using Microsoft.Extensions.Logging;
 
 namespace ClientApp
 {
@@ -15,8 +17,18 @@ namespace ClientApp
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            builder.Services.AddSingleton<AppShell>();
+
+            builder.Services.AddSingleton<LoginPage>();
+            builder.Services.AddSingleton<ItemsPage>();
+            builder.Services.AddTransient<ActionPage>();
+
+            builder.Services.AddSingleton<LoginViewModel>();
+            builder.Services.AddSingleton<ItemsViewModel>();
+            builder.Services.AddTransient<ActionViewModel>();
+
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();
