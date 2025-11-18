@@ -17,12 +17,12 @@ ClientApp/ # .NET MAUI App (.NET 8), MVVM ( папка ViewModels )
 
 ## Налаштування
 1. Клонувати репозиторій або відкрити solution `ManagementSystem.sln`.
-2. Запустити `Server/ServerApp` (F5) — порожня сторінка/Hello World.
+2. Запустити `Server/ServerApp`.
 3. Запустити `Client/ClientApp` на Android-емуляторі (API 33).
 
 ## Предметна область
 Предметна область - бібліотека, база даних якої підтримує 3 таблиці: **Librarians**, **Books**, **BorrowRequests**.
 
 ## Git
-- `main` — стабільна гілка.
+- `master` — стабільна гілка.
 - Розробка — через feature-бренчі з PR.
