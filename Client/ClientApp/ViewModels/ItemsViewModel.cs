@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientApp.Models;
@@ -12,6 +14,15 @@ namespace ClientApp.ViewModels
     {
         private readonly ApiService _apiService;
 
+        /// <summary>
+        /// Кешований список книжок, спільний для всіх екземплярів ViewModel.
+        /// Заповнюється при першому успішному запиті до API.
+        /// </summary>
+        private static List<Book>? _cachedBooks;
+
+        /// <summary>
+        /// Колекція для прив'язки до UI (ListView/CollectionView).
+        /// </summary>
         public ObservableCollection<Book> Books { get; } = new();
 
         [ObservableProperty]
@@ -23,6 +34,11 @@ namespace ClientApp.ViewModels
             Title = "Library Catalog";
         }
 
+        /// <summary>
+        /// Завантаження списку книжок.
+        /// Спочатку намагається використати кеш (_cachedBooks),
+        /// при його відсутності робить запит до API та оновлює кеш.
+        /// </summary>
         [RelayCommand]
         public async Task LoadItemsAsync()
         {
@@ -37,8 +53,27 @@ namespace ClientApp.ViewModels
                 StatusMessage = string.Empty;
                 Books.Clear();
 
+                // Якщо в нас уже є кешовані дані – використовуємо їх, без запиту до API
+                if (_cachedBooks is not null && _cachedBooks.Count > 0)
+                {
+                    foreach (var book in _cachedBooks)
+                    {
+                        Books.Add(book);
+                    }
+
+                    // За бажанням можна показати повідомлення:
+                    // StatusMessage = "Books loaded from cache.";
+                    return;
+                }
+
+                // Кешу ще немає – вантажимо з API
                 var books = await _apiService.GetBooksAsync();
-                foreach (var book in books)
+
+                // Оновлюємо кеш
+                _cachedBooks = books.ToList();
+
+                // Заповнюємо ObservableCollection для UI
+                foreach (var book in _cachedBooks)
                 {
                     Books.Add(book);
                 }
@@ -58,6 +93,9 @@ namespace ClientApp.ViewModels
             }
         }
 
+        /// <summary>
+        /// Перехід на сторінку створення дії (BorrowRequest) з передачею вибраної книжки.
+        /// </summary>
         [RelayCommand]
         private async Task NavigateToCreateActionAsync(Book? book)
         {
@@ -68,6 +106,15 @@ namespace ClientApp.ViewModels
             };
 
             await Shell.Current.GoToAsync(nameof(ActionPage), query);
+        }
+
+        /// <summary>
+        /// Опціонально: метод, щоб скинути кеш (наприклад, після явного оновлення).
+        /// Можеш викликати його з кнопки "Refresh".
+        /// </summary>
+        public static void ClearCache()
+        {
+            _cachedBooks = null;
         }
     }
 }
