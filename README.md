@@ -1,6 +1,6 @@
-﻿# ManagementSystem
+﻿# Library Management System (ASP.NET Core + MAUI)
 
-Система для управління **Librarians**, **Books**, **BorrowRequests** з MVC-адмін-панеллю (ASP.NET Core) та мобільним .NET MAUI застосунком (MVVM).
+Повноцінна система для управління керування бібліотекою **Librarians**, **Books**, **BorrowRequests** з MVC-адмін-панеллю (ASP.NET Core), мобільним .NET MAUI застосунком (MVVM), REST API (JWT-аутентифікація) та SQL Server базою даних.
 
 ## Вимоги
 - Visual Studio 2022 Community
@@ -17,6 +17,10 @@ ClientApp/ # .NET MAUI App (.NET 8), MVVM ( папка ViewModels )
 
 ## Налаштування
 1. Клонувати репозиторій або відкрити solution `ManagementSystem.sln`.
+Запуск локально для сервера:
+- dotnet build
+- dotnet ef database update
+- dotnet run
 2. Запустити `Server/ServerApp`.
 3. Запустити `Client/ClientApp` на Android-емуляторі (API 33).
 
@@ -26,3 +30,37 @@ ClientApp/ # .NET MAUI App (.NET 8), MVVM ( папка ViewModels )
 ## Git
 - `master` — стабільна гілка.
 - Розробка — через feature-бренчі з PR.
+
+
+## 🚀 Функціональність
+
+### 1. Адмін-панель (MVC)
+- Авторизація адміністратора
+- CRUD-операції:
+  - Librarians
+  - Books
+  - BorrowRequests
+
+### 2. REST API (ASP.NET Core Web API)
+- `POST /api/auth/login` — отримання JWT
+- `GET /api/books` — список книжок
+- `POST /api/borrowrequests` — створення запиту на видачу
+- Swagger доступний за /swagger
+
+### 3. MAUI Mobile App
+- Логін бібліотекаря
+- Перегляд книжок (ItemsPage)
+- Створення BorrowRequest
+- Кешування списку книжок
+
+---
+
+## 🔐 Аутентифікація через JWT
+
+Приклад login-запиту:
+```http
+POST /api/auth/login
+{
+  "email": "olena.koval@library.com",
+  "password": "********"
+}
