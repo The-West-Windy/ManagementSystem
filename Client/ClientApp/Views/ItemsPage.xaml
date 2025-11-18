@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:ClientApp.ViewModels"
+             xmlns:models="clr-namespace:ClientApp.Models"
+             x:Class="ClientApp.Views.ItemsPage"
+             x:Name="Page"
+             x:DataType="viewModels:ItemsViewModel"
+             Title="Books">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="New Request" Command="{Binding NavigateToCreateActionCommand}" />
+        <ToolbarItem Text="Refresh" Command="{Binding LoadItemsCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <RefreshView Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy}">
+        <Grid RowDefinitions="Auto,Auto">
+            <CollectionView Grid.Row="0" ItemsSource="{Binding Books}" SelectionMode="None" Margin="12">
+                <CollectionView.EmptyView>
+                    <Label Text="No books available." HorizontalTextAlignment="Center" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Book">
+                        <Frame Padding="12" Margin="0,6" CornerRadius="10" BorderColor="#e0e0e0">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold" />
+                                <Label Text="{Binding Author}" FontAttributes="Italic" />
+                                <Label Text="{Binding Status}" TextColor="Gray" />
+                                <Label Text="{Binding Description}" LineBreakMode="WordWrap" />
+                                <Button Text="Create Borrow Request"
+                                        Command="{Binding BindingContext.NavigateToCreateActionCommand, Source={x:Reference Page}}"
+                                        CommandParameter="{Binding .}" />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label Grid.Row="1"
+                   Margin="12"
+                   Text="{Binding StatusMessage}"
+                   TextColor="Gray"
+                   LineBreakMode="WordWrap" />
+        </Grid>
+    </RefreshView>
+</ContentPage>

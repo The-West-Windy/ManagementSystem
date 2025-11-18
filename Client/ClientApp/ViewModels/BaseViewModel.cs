@@ -1,12 +1,13 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace ClientApp.ViewModels
 {
-    public abstract class BaseViewModel : INotifyPropertyChanged
+    public abstract partial class BaseViewModel : ObservableObject
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string? name = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        [ObservableProperty]
+        private bool isBusy;
+
+        [ObservableProperty]
+        private string title = string.Empty;
     }
 }

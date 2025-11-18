@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:ClientApp.ViewModels"
+             x:Class="ClientApp.Views.ActionPage"
+             x:DataType="viewModels:ActionViewModel"
+             Title="Borrow Request">
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="12">
+            <Label Text="Create Borrow Request" Style="{StaticResource Headline}" />
+            <Label Text="Provide the details to let readers borrow a book." Style="{StaticResource SubHeadline}" />
+
+            <Entry Placeholder="Book title" Text="{Binding BookTitle}" IsReadOnly="True" />
+            <Entry Placeholder="Borrower name" Text="{Binding BorrowerName}" />
+            <Editor Placeholder="Notes" HeightRequest="120" Text="{Binding Notes}" />
+
+            <Button Text="Submit" Command="{Binding SubmitCommand}" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            <Label Text="{Binding StatusMessage}" TextColor="Gray" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
