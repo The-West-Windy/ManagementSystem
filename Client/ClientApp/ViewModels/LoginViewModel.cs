@@ -51,7 +51,8 @@ namespace ClientApp.ViewModels
                 }
 
                 StatusMessage = "Login successful. Loading books...";
-                await Shell.Current.GoToAsync($"//{nameof(ItemsPage)}");
+                //await Shell.Current.GoToAsync($"//{nameof(ItemsPage)}");
+                await Shell.Current.GoToAsync(nameof(ItemsPage));
             }
             catch (Exception ex)
             {

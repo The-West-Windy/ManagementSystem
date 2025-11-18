@@ -20,14 +20,14 @@ namespace ServerApp.Models
                     ID = 1,
                     Name = "Олена Коваль",
                     Email = "olena.koval@library.com",
-                    PasswordHash = "$2b$12$C6UzMDM.H6dfI/f/IK6G7.ueWnACpPiiPMTKoXoB4GAibl0JZ8D4e"
+                    PasswordHash = "$2a$11$hMgF1UtGTeh2SmFxtodZje0aoyxzCFyUn4wUe3rRwxEzqieYvNaqW"
                 },
                 new Librarian
                 {
                     ID = 2,
                     Name = "Ігор Петренко",
                     Email = "ihor.petrenko@library.com",
-                    PasswordHash = "$2b$12$C6UzMDM.H6dfI/f/IK6G7.NMNsvcRC5TBpBzR40cz1K3pzGNuHPgi"
+                    PasswordHash = "$2a$11$KWJFyA1XhpSB.45m2pVC2.3ODUpnbfUgLyD/cZVr7Rq8RfehL8Nxe"
                 }
             );
 
@@ -56,6 +56,7 @@ namespace ServerApp.Models
                 }
             );
         }
+
     }
 
     public class Librarian
