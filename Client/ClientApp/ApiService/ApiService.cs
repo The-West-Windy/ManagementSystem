@@ -1,8 +1,6 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
 using ClientApp.Models;
 using Microsoft.Maui.Storage;
 
@@ -11,6 +9,7 @@ namespace ClientApp.Services
     public class ApiService
     {
         private const string TokenPreferenceKey = "jwt_token";
+        private const string LibrarianIdPreferenceKey = "librarian_id";
         private readonly HttpClient _httpClient;
 
         public ApiService(HttpClient httpClient)
@@ -31,12 +30,18 @@ namespace ClientApp.Services
             }
 
             var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
-            if (string.IsNullOrWhiteSpace(authResponse?.Token))
+            if (authResponse is null || string.IsNullOrWhiteSpace(authResponse.Token))
             {
                 return (false, "The API did not return a JWT token.");
             }
 
+            if (authResponse.LibrarianId <= 0)
+            {
+                return (false, "The API did not return a valid librarian identifier.");
+            }
+
             Preferences.Set(TokenPreferenceKey, authResponse.Token);
+            Preferences.Set(LibrarianIdPreferenceKey, authResponse.LibrarianId);
             SetAuthorizationHeader(authResponse.Token);
             return (true, null);
         }
@@ -58,32 +63,10 @@ namespace ClientApp.Services
             await EnsureSuccessStatusCodeAsync(response);
         }
 
-        public int? GetLibrarianIdFromToken()
+        public int? GetCurrentLibrarianId()
         {
-            var token = Preferences.Get(TokenPreferenceKey, string.Empty);
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                return null;
-            }
-
-            var parts = token.Split('.');
-            if (parts.Length < 2)
-            {
-                return null;
-            }
-
-            var payload = parts[1].PadRight(parts[1].Length + (4 - parts[1].Length % 4) % 4, '=');
-            var payloadBytes = Convert.FromBase64String(payload);
-            var payloadJson = Encoding.UTF8.GetString(payloadBytes);
-
-            using var document = JsonDocument.Parse(payloadJson);
-            if (document.RootElement.TryGetProperty("sub", out var subElement) &&
-                int.TryParse(subElement.GetString(), out var librarianId))
-            {
-                return librarianId;
-            }
-
-            return null;
+            var librarianId = Preferences.Get(LibrarianIdPreferenceKey, -1);
+            return librarianId > 0 ? librarianId : null;
         }
 
         private void RestoreToken()
@@ -125,8 +108,7 @@ namespace ClientApp.Services
             var error = await response.Content.ReadAsStringAsync();
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                Preferences.Remove(TokenPreferenceKey);
-                _httpClient.DefaultRequestHeaders.Authorization = null;
+                ClearStoredSession();
                 throw new UnauthorizedAccessException("Authorization failed. Please log in again.");
             }
 
@@ -145,8 +127,15 @@ namespace ClientApp.Services
                 HttpStatusCode.BadRequest => "The server rejected the request.",
                 HttpStatusCode.NotFound => "The requested resource was not found.",
                 HttpStatusCode.InternalServerError => "The server returned an error.",
-                _ => $"Unexpected response from server: {(int)statusCode}."
+                _ => $"Unexpected response from server: {(int)statusCode}.",
             };
+        }
+
+        private void ClearStoredSession()
+        {
+            Preferences.Remove(TokenPreferenceKey);
+            Preferences.Remove(LibrarianIdPreferenceKey);
+            _httpClient.DefaultRequestHeaders.Authorization = null;
         }
     }
 }

@@ -16,6 +16,8 @@
         <tr>
             <th>Librarian</th>
             <th>Book</th>
+            <th>Borrower</th>
+            <th>Notes</th>
             <th>Request Date</th>
             <th>Status</th>
             <th>Actions</th>
@@ -27,6 +29,8 @@
             <tr>
                 <td>@request.Librarian?.Name</td>
                 <td>@request.Book?.Title</td>
+                <td>@request.BorrowerName</td>
+                <td>@(string.IsNullOrWhiteSpace(request.Notes) ? "—" : request.Notes)</td>
                 <td>@request.RequestDate.ToString("yyyy-MM-dd")</td>
                 <td>@request.Status</td>
                 <td>

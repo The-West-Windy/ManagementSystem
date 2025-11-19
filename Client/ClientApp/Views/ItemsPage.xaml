@@ -8,13 +8,20 @@
              x:DataType="viewModels:ItemsViewModel"
              Title="Books">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="New Request" Command="{Binding NavigateToCreateActionCommand}" />
+        <ToolbarItem Text="New Request"
+                     Command="{Binding NavigateToCreateActionCommand}"
+                     CommandParameter="{Binding SelectedBook}"
+                     IsEnabled="{Binding HasSelectedBook}" />
         <ToolbarItem Text="Refresh" Command="{Binding LoadItemsCommand}" />
     </ContentPage.ToolbarItems>
 
     <RefreshView Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy}">
         <Grid RowDefinitions="Auto,Auto">
-            <CollectionView Grid.Row="0" ItemsSource="{Binding Books}" SelectionMode="None" Margin="12">
+            <CollectionView Grid.Row="0"
+                            ItemsSource="{Binding Books}"
+                            SelectionMode="Single"
+                            SelectedItem="{Binding SelectedBook}"
+                            Margin="12">
                 <CollectionView.EmptyView>
                     <Label Text="No books available." HorizontalTextAlignment="Center" />
                 </CollectionView.EmptyView>

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServerApp.Models;
 using ServerApp.Models.DTOs;
@@ -28,7 +28,11 @@ namespace ServerApp.Controllers.Api
                 return BadRequest("Request body is null");
             }
 
-            // Перевірка існування Librarian і Book
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
             var librarian = await _context.Librarians.FindAsync(dto.LibrarianID);
             var book = await _context.Books.FindAsync(dto.BookID);
 
@@ -41,14 +45,15 @@ namespace ServerApp.Controllers.Api
             {
                 LibrarianID = dto.LibrarianID,
                 BookID = dto.BookID,
-                Status = dto.Status,
+                BorrowerName = dto.BorrowerName.Trim(),
+                Notes = string.IsNullOrWhiteSpace(dto.Notes) ? null : dto.Notes.Trim(),
+                Status = BorrowRequestStatus.Pending,
                 RequestDate = DateTime.UtcNow
             };
 
             _context.BorrowRequests.Add(borrowRequest);
             await _context.SaveChangesAsync();
 
-            // Повертаємо тільки ID нового запиту
             return Ok(new { borrowRequest.ID });
         }
     }
