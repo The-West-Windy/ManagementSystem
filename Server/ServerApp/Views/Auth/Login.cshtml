@@ -12,6 +12,7 @@
     }
 
     <form method="post" action="/auth/login">
+        @Html.AntiForgeryToken()
         <div style="margin-bottom:10px;">
             <label>Username:</label><br />
             <input type="text" name="username" required style="width:100%;" />

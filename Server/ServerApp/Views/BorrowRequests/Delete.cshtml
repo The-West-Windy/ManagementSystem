@@ -11,8 +11,10 @@
 <div>
     <p><strong>Librarian:</strong> @Model.Librarian?.Name</p>
     <p><strong>Book:</strong> @Model.Book?.Title</p>
+    <p><strong>Borrower:</strong> @Model.BorrowerName</p>
     <p><strong>Request Date:</strong> @Model.RequestDate.ToString("yyyy-MM-dd")</p>
     <p><strong>Status:</strong> @Model.Status</p>
+    <p><strong>Notes:</strong> @(string.IsNullOrWhiteSpace(Model.Notes) ? "—" : Model.Notes)</p>
 </div>
 
 <form asp-action="Delete" method="post">

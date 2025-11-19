@@ -54,7 +54,8 @@ namespace ServerApp.Controllers.Api
             {
                 new Claim(JwtRegisteredClaimNames.Sub, librarian.ID.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, librarian.Email),
-                new Claim(ClaimTypes.Name, librarian.Name)
+                new Claim(ClaimTypes.Name, librarian.Name),
+                new Claim(ClaimTypes.NameIdentifier, librarian.ID.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
@@ -68,7 +69,7 @@ namespace ServerApp.Controllers.Api
             );
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-            return Ok(new { token = tokenString });
+            return Ok(new { token = tokenString, librarianId = librarian.ID });
         }
     }
 }

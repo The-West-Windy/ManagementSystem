@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using ServerApp.Models;
 using ServerApp.Models.DTOs;
 using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ServerApp.Controllers.Api
@@ -23,13 +25,23 @@ namespace ServerApp.Controllers.Api
         [HttpPost]
         public async Task<IActionResult> CreateAction([FromBody] BorrowRequestDto dto)
         {
-            if (dto == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest("Request body is null");
+                return ValidationProblem(ModelState);
             }
 
-            // Перевірка існування Librarian і Book
-            var librarian = await _context.Librarians.FindAsync(dto.LibrarianID);
+            if (dto.Status != BorrowRequestStatus.Pending)
+            {
+                return BadRequest("New requests must be created with a Pending status.");
+            }
+
+            var claimValue = User.FindFirstValue(JwtRegisteredClaimNames.Sub) ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(claimValue, out var librarianId))
+            {
+                return Unauthorized("Unable to determine the current librarian.");
+            }
+
+            var librarian = await _context.Librarians.FindAsync(librarianId);
             var book = await _context.Books.FindAsync(dto.BookID);
 
             if (librarian == null || book == null)
@@ -39,9 +51,11 @@ namespace ServerApp.Controllers.Api
 
             var borrowRequest = new BorrowRequest
             {
-                LibrarianID = dto.LibrarianID,
+                LibrarianID = librarianId,
                 BookID = dto.BookID,
-                Status = dto.Status,
+                BorrowerName = dto.BorrowerName.Trim(),
+                Notes = string.IsNullOrWhiteSpace(dto.Notes) ? null : dto.Notes.Trim(),
+                Status = BorrowRequestStatus.Pending,
                 RequestDate = DateTime.UtcNow
             };
 
