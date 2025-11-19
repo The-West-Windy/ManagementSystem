@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ServerApp.Models
 {
@@ -11,9 +13,32 @@ namespace ServerApp.Models
         public DbSet<Librarian> Librarians { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<BorrowRequest> BorrowRequests { get; set; }
+        public DbSet<Admin> Admins { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<BorrowRequest>()
+                .Property(br => br.Status)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<BorrowRequest>()
+                .Property(br => br.BorrowerName)
+                .HasMaxLength(100);
+
+            modelBuilder.Entity<BorrowRequest>()
+                .Property(br => br.Notes)
+                .HasMaxLength(500);
+
+            modelBuilder.Entity<Admin>().HasData(
+                new Admin
+                {
+                    ID = 1,
+                    Username = "admin",
+                    PasswordHash = "$2b$12$vKxXc57i4wpunkKs8s321ebi2GRJmlRLCtQRuD5BSa5giGXa/MNAm",
+                    Role = "Administrator"
+                }
+            );
+
             modelBuilder.Entity<Librarian>().HasData(
                 new Librarian
                 {
@@ -44,7 +69,9 @@ namespace ServerApp.Models
                     LibrarianID = 1,
                     BookID = 2,
                     RequestDate = new DateTime(2025, 11, 1),
-                    Status = "Approved"
+                    Status = BorrowRequestStatus.Approved,
+                    BorrowerName = "Марія Савчук",
+                    Notes = "Повернення до 15.12"
                 },
                 new BorrowRequest
                 {
@@ -52,7 +79,9 @@ namespace ServerApp.Models
                     LibrarianID = 2,
                     BookID = 3,
                     RequestDate = new DateTime(2025, 11, 2),
-                    Status = "Pending"
+                    Status = BorrowRequestStatus.Pending,
+                    BorrowerName = "Павло Литвин",
+                    Notes = null
                 }
             );
         }
@@ -62,17 +91,17 @@ namespace ServerApp.Models
     public class Librarian
     {
         public int ID { get; set; }
-        public string Name { get; set; } = "";
-        public string Email { get; set; } = "";
-        public string PasswordHash { get; set; } = "";
+        public string Name { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string PasswordHash { get; set; } = string.Empty;
         public ICollection<BorrowRequest>? BorrowRequests { get; set; }
     }
 
     public class Book
     {
         public int ID { get; set; }
-        public string Title { get; set; } = "";
-        public string Author { get; set; } = "";
+        public string Title { get; set; } = string.Empty;
+        public string Author { get; set; } = string.Empty;
         public string Status { get; set; } = "Available";
         public ICollection<BorrowRequest>? BorrowRequests { get; set; }
     }
@@ -82,8 +111,17 @@ namespace ServerApp.Models
         public int ID { get; set; }
         public int LibrarianID { get; set; }
         public int BookID { get; set; }
-        public DateTime RequestDate { get; set; }   // 🔹
-        public string Status { get; set; } = "Pending";
+        public DateTime RequestDate { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        public string BorrowerName { get; set; } = string.Empty;
+
+        [MaxLength(500)]
+        public string? Notes { get; set; }
+
+        public BorrowRequestStatus Status { get; set; } = BorrowRequestStatus.Pending;
+
         public Librarian? Librarian { get; set; }
         public Book? Book { get; set; }
     }

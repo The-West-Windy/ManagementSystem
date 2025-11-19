@@ -18,6 +18,16 @@ GO
 IF OBJECT_ID('dbo.BorrowRequests', 'U') IS NOT NULL DROP TABLE dbo.BorrowRequests;
 IF OBJECT_ID('dbo.Books', 'U') IS NOT NULL DROP TABLE dbo.Books;
 IF OBJECT_ID('dbo.Librarians', 'U') IS NOT NULL DROP TABLE dbo.Librarians;
+IF OBJECT_ID('dbo.Admins', 'U') IS NOT NULL DROP TABLE dbo.Admins;
+GO
+
+-- Таблиця Admins
+CREATE TABLE Admins (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    Username NVARCHAR(50) NOT NULL,
+    PasswordHash NVARCHAR(255) NOT NULL,
+    Role NVARCHAR(50) NOT NULL DEFAULT 'Administrator'
+);
 GO
 
 -- Таблиця Librarians
@@ -45,7 +55,9 @@ CREATE TABLE BorrowRequests (
     LibrarianID INT NOT NULL,
     BookID INT NOT NULL,
     RequestDate DATETIME DEFAULT GETDATE(),
-    Status NVARCHAR(20) 
+    BorrowerName NVARCHAR(100) NOT NULL,
+    Notes NVARCHAR(500) NULL,
+    Status NVARCHAR(20)
         CHECK (Status IN ('Pending', 'Approved', 'Rejected')) DEFAULT 'Pending',
     CONSTRAINT FK_BorrowRequests_Librarians FOREIGN KEY (LibrarianID)
         REFERENCES Librarians(ID) ON DELETE CASCADE,
@@ -81,6 +93,10 @@ GO
 -- Вставка тестових даних
 -- ============================================
 
+INSERT INTO Admins (Username, PasswordHash, Role)
+VALUES
+('admin', '$2b$12$vKxXc57i4wpunkKs8s321ebi2GRJmlRLCtQRuD5BSa5giGXa/MNAm', 'Administrator');
+
 INSERT INTO Librarians (Name, Email, PasswordHash)
 VALUES
 (N'Олена Коваль', N'olena.koval@library.com', '$2a$11$hMgF1UtGTeh2SmFxtodZje0aoyxzCFyUn4wUe3rRwxEzqieYvNaqW'),
@@ -92,10 +108,10 @@ VALUES
 (N'Кобзар', N'Тарас Шевченко', 'Borrowed'),
 (N'1984', N'Джордж Орвелл', 'Available');
 
-INSERT INTO BorrowRequests (LibrarianID, BookID, Status)
+INSERT INTO BorrowRequests (LibrarianID, BookID, BorrowerName, Notes, Status)
 VALUES
-(1, 2, 'Approved'),
-(2, 3, 'Pending');
+(1, 2, N'Марія Савчук', N'Повернення до 15.12', 'Approved'),
+(2, 3, N'Павло Литвин', NULL, 'Pending');
 GO
 
 -- Перевірка даних

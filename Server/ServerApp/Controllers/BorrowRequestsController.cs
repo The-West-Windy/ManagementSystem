@@ -60,7 +60,7 @@ namespace ServerApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,LibrarianID,BookID,RequestDate,Status")] BorrowRequest borrowRequest)
+        public async Task<IActionResult> Create([Bind("ID,LibrarianID,BookID,RequestDate,BorrowerName,Notes,Status")] BorrowRequest borrowRequest)
         {
             if (ModelState.IsValid)
             {
@@ -100,7 +100,7 @@ namespace ServerApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,LibrarianID,BookID,RequestDate,Status")] BorrowRequest borrowRequest)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,LibrarianID,BookID,RequestDate,BorrowerName,Notes,Status")] BorrowRequest borrowRequest)
         {
             if (id != borrowRequest.ID)
             {

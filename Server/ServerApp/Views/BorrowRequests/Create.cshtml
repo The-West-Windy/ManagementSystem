@@ -21,12 +21,21 @@
     </div>
 
     <div class="mb-3">
+        <label asp-for="BorrowerName" class="form-label"></label>
+        <input asp-for="BorrowerName" class="form-control" />
+        <span asp-validation-for="BorrowerName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Notes" class="form-label"></label>
+        <textarea asp-for="Notes" class="form-control"></textarea>
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
         <label asp-for="Status" class="form-label"></label>
-        <select asp-for="Status" class="form-select">
-            <option>Pending</option>
-            <option>Approved</option>
-            <option>Rejected</option>
-        </select>
+        <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<ServerApp.Models.BorrowRequestStatus>()"></select>
+        <span asp-validation-for="Status" class="text-danger"></span>
     </div>
 
     <div class="mb-3">

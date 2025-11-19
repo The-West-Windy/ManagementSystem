@@ -68,7 +68,7 @@ namespace ServerApp.Controllers.Api
             );
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-            return Ok(new { token = tokenString });
+            return Ok(new { token = tokenString, librarianId = librarian.ID });
         }
     }
 }

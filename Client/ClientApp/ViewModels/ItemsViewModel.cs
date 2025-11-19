@@ -28,6 +28,9 @@ namespace ClientApp.ViewModels
         [ObservableProperty]
         private string statusMessage = string.Empty;
 
+        [ObservableProperty]
+        private Book? selectedBook;
+
         public ItemsViewModel(ApiService apiService)
         {
             _apiService = apiService;
@@ -48,10 +51,11 @@ namespace ClientApp.ViewModels
             }
 
             try
-            {
-                IsBusy = true;
-                StatusMessage = string.Empty;
-                Books.Clear();
+                {
+                    IsBusy = true;
+                    StatusMessage = string.Empty;
+                    Books.Clear();
+                    SelectedBook = null;
 
                 // Якщо в нас уже є кешовані дані – використовуємо їх, без запиту до API
                 if (_cachedBooks is not null && _cachedBooks.Count > 0)
@@ -96,17 +100,33 @@ namespace ClientApp.ViewModels
         /// <summary>
         /// Перехід на сторінку створення дії (BorrowRequest) з передачею вибраної книжки.
         /// </summary>
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanNavigateToCreateAction))]
         private async Task NavigateToCreateActionAsync(Book? book)
         {
+            if (book is null)
+            {
+                StatusMessage = "Please select a book first.";
+                return;
+            }
+
             var query = new Dictionary<string, object?>
             {
-                ["BookTitle"] = book?.Title ?? string.Empty,
-                ["BookId"] = book?.Id ?? 0
+                ["BookTitle"] = book.Title,
+                ["BookId"] = book.Id
             };
 
             await Shell.Current.GoToAsync(nameof(ActionPage), query);
         }
+
+        public bool HasSelectedBook => SelectedBook is not null;
+
+        partial void OnSelectedBookChanged(Book? value)
+        {
+            NavigateToCreateActionCommand.NotifyCanExecuteChanged();
+            OnPropertyChanged(nameof(HasSelectedBook));
+        }
+
+        private static bool CanNavigateToCreateAction(Book? book) => book is not null;
 
         /// <summary>
         /// Опціонально: метод, щоб скинути кеш (наприклад, після явного оновлення).

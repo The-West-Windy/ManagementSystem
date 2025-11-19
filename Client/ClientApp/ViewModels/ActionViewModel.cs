@@ -58,7 +58,7 @@ namespace ClientApp.ViewModels
                     return;
                 }
 
-                var librarianId = _apiService.GetLibrarianIdFromToken();
+                var librarianId = _apiService.GetCurrentLibrarianId();
                 if (librarianId is null)
                 {
                     StatusMessage = "Session expired. Please log in again.";
@@ -66,16 +66,13 @@ namespace ClientApp.ViewModels
                     return;
                 }
 
-                var statusText = string.IsNullOrWhiteSpace(Notes) ? "Pending" : Notes.Trim();
-                statusText = string.IsNullOrWhiteSpace(BorrowerName)
-                    ? statusText
-                    : $"{statusText} ({BorrowerName.Trim()})";
-
                 var request = new BorrowRequest
                 {
                     BookID = BookId,
                     LibrarianID = librarianId.Value,
-                    Status = statusText
+                    BorrowerName = BorrowerName.Trim(),
+                    Notes = string.IsNullOrWhiteSpace(Notes) ? null : Notes.Trim(),
+                    Status = BorrowRequestStatus.Pending
                 };
 
                 await _apiService.CreateBorrowRequestAsync(request);
