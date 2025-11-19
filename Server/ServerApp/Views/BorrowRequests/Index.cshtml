@@ -16,8 +16,10 @@
         <tr>
             <th>Librarian</th>
             <th>Book</th>
+            <th>Borrower</th>
             <th>Request Date</th>
             <th>Status</th>
+            <th>Notes</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -27,8 +29,10 @@
             <tr>
                 <td>@request.Librarian?.Name</td>
                 <td>@request.Book?.Title</td>
+                <td>@request.BorrowerName</td>
                 <td>@request.RequestDate.ToString("yyyy-MM-dd")</td>
                 <td>@request.Status</td>
+                <td>@(string.IsNullOrWhiteSpace(request.Notes) ? "—" : request.Notes)</td>
                 <td>
                     <a class="btn btn-sm btn-info" href="@Url.Action("Edit", new { id = request.ID })">Edit</a>
                     <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = request.ID })">Delete</a>

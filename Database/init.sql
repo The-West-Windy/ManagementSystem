@@ -18,6 +18,7 @@ GO
 IF OBJECT_ID('dbo.BorrowRequests', 'U') IS NOT NULL DROP TABLE dbo.BorrowRequests;
 IF OBJECT_ID('dbo.Books', 'U') IS NOT NULL DROP TABLE dbo.Books;
 IF OBJECT_ID('dbo.Librarians', 'U') IS NOT NULL DROP TABLE dbo.Librarians;
+IF OBJECT_ID('dbo.AdminUsers', 'U') IS NOT NULL DROP TABLE dbo.AdminUsers;
 GO
 
 -- Таблиця Librarians
@@ -26,6 +27,15 @@ CREATE TABLE Librarians (
     Name NVARCHAR(100) NOT NULL,
     Email NVARCHAR(100) NOT NULL,
     PasswordHash NVARCHAR(255) NOT NULL
+);
+GO
+
+-- Таблиця AdminUsers
+CREATE TABLE AdminUsers (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    Username NVARCHAR(100) NOT NULL,
+    PasswordHash NVARCHAR(255) NOT NULL,
+    Role NVARCHAR(50) NOT NULL
 );
 GO
 
@@ -44,8 +54,10 @@ CREATE TABLE BorrowRequests (
     ID INT IDENTITY(1,1) PRIMARY KEY,
     LibrarianID INT NOT NULL,
     BookID INT NOT NULL,
+    BorrowerName NVARCHAR(100) NOT NULL,
+    Notes NVARCHAR(500) NULL,
     RequestDate DATETIME DEFAULT GETDATE(),
-    Status NVARCHAR(20) 
+    Status NVARCHAR(20)
         CHECK (Status IN ('Pending', 'Approved', 'Rejected')) DEFAULT 'Pending',
     CONSTRAINT FK_BorrowRequests_Librarians FOREIGN KEY (LibrarianID)
         REFERENCES Librarians(ID) ON DELETE CASCADE,
@@ -92,10 +104,14 @@ VALUES
 (N'Кобзар', N'Тарас Шевченко', 'Borrowed'),
 (N'1984', N'Джордж Орвелл', 'Available');
 
-INSERT INTO BorrowRequests (LibrarianID, BookID, Status)
+INSERT INTO BorrowRequests (LibrarianID, BookID, BorrowerName, Notes, Status)
 VALUES
-(1, 2, 'Approved'),
-(2, 3, 'Pending');
+(1, 2, N'Марія Клименко', N'Request placed during conference week', 'Approved'),
+(2, 3, N'Олег Данилюк', NULL, 'Pending');
+
+INSERT INTO AdminUsers (Username, PasswordHash, Role)
+VALUES
+(N'admin', '$2y$11$u41.KkjrWn5D1cbsAV44o.SfYjKO6YInBfGtheVfAWH6IGC78xNoy', N'Administrator');
 GO
 
 -- Перевірка даних

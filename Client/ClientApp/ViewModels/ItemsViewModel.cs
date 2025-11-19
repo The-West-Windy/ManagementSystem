@@ -28,6 +28,12 @@ namespace ClientApp.ViewModels
         [ObservableProperty]
         private string statusMessage = string.Empty;
 
+        [ObservableProperty]
+        private Book? selectedBook;
+
+        [ObservableProperty]
+        private bool isRequestCreationEnabled;
+
         public ItemsViewModel(ApiService apiService)
         {
             _apiService = apiService;
@@ -51,6 +57,7 @@ namespace ClientApp.ViewModels
             {
                 IsBusy = true;
                 StatusMessage = string.Empty;
+                SelectedBook = null;
                 Books.Clear();
 
                 // Якщо в нас уже є кешовані дані – використовуємо їх, без запиту до API
@@ -99,6 +106,12 @@ namespace ClientApp.ViewModels
         [RelayCommand]
         private async Task NavigateToCreateActionAsync(Book? book)
         {
+            if (book is null)
+            {
+                StatusMessage = "Select a book before creating a request.";
+                return;
+            }
+
             var query = new Dictionary<string, object?>
             {
                 ["BookTitle"] = book?.Title ?? string.Empty,
@@ -115,6 +128,11 @@ namespace ClientApp.ViewModels
         public static void ClearCache()
         {
             _cachedBooks = null;
+        }
+
+        partial void OnSelectedBookChanged(Book? value)
+        {
+            IsRequestCreationEnabled = value is not null;
         }
     }
 }

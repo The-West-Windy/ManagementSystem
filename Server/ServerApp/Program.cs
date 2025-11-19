@@ -9,7 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // ==================== SERVICES ====================
 
-builder.Services.AddControllersWithViews();
+builder.Services
+    .AddControllersWithViews()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
 builder.Services.AddEndpointsApiExplorer(); // для Swagger
 builder.Services.AddSwaggerGen(options =>
 {
@@ -89,6 +94,9 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+}
+else
+{
     app.UseDeveloperExceptionPage();
 }
 
