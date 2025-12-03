@@ -1,4 +1,3 @@
-﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -14,22 +13,7 @@ namespace ServerApp.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Books",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Author = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Books", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Librarians",
+                name: "Coaches",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
@@ -40,87 +24,113 @@ namespace ServerApp.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Librarians", x => x.ID);
+                    table.PrimaryKey("PK_Coaches", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
-                name: "BorrowRequests",
+                name: "Classes",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    LibrarianID = table.Column<int>(type: "int", nullable: false),
-                    BookID = table.Column<int>(type: "int", nullable: false),
-                    RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CoachID = table.Column<int>(type: "int", nullable: false),
+                    TimeSlot = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Classes", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Classes_Coaches_CoachID",
+                        column: x => x.CoachID,
+                        principalTable: "Coaches",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Bookings",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CoachID = table.Column<int>(type: "int", nullable: false),
+                    ClassID = table.Column<int>(type: "int", nullable: false),
+                    ClientName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BorrowRequests", x => x.ID);
+                    table.PrimaryKey("PK_Bookings", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_BorrowRequests_Books_BookID",
-                        column: x => x.BookID,
-                        principalTable: "Books",
+                        name: "FK_Bookings_Classes_ClassID",
+                        column: x => x.ClassID,
+                        principalTable: "Classes",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BorrowRequests_Librarians_LibrarianID",
-                        column: x => x.LibrarianID,
-                        principalTable: "Librarians",
+                        name: "FK_Bookings_Coaches_CoachID",
+                        column: x => x.CoachID,
+                        principalTable: "Coaches",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
-                table: "Books",
-                columns: new[] { "ID", "Author", "Status", "Title" },
-                values: new object[,]
-                {
-                    { 1, "Сунь-Цзи", "Available", "Мистецтво війни" },
-                    { 2, "Тарас Шевченко", "Borrowed", "Кобзар" },
-                    { 3, "Джордж Орвелл", "Available", "1984" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Librarians",
+                table: "Coaches",
                 columns: new[] { "ID", "Email", "Name", "PasswordHash" },
                 values: new object[,]
                 {
-                    { 1, "olena.koval@library.com", "Олена Коваль", "$2b$12$C6UzMDM.H6dfI/f/IK6G7.ueWnACpPiiPMTKoXoB4GAibl0JZ8D4e" },
-                    { 2, "ihor.petrenko@library.com", "Ігор Петренко", "$2a$11$BJ6xZCQBBYXQLDjed75FPeFuquR7YDrn.EI47VkK0j6v9.3fMT6f6" }
+                    { 1, "olena.fit@fitgym.com", "Олена Фітнес", "$2a$11$hMgF1UtGTeh2SmFxtodZje0aoyxzCFyUn4wUe3rRwxEzqieYvNaqW" },
+                    { 2, "ihor.trainer@fitgym.com", "Ігор Тренер", "$2a$11$KWJFyA1XhpSB.45m2pVC2.3ODUpnbfUgLyD/cZVr7Rq8RfehL8Nxe" }
                 });
 
             migrationBuilder.InsertData(
-                table: "BorrowRequests",
-                columns: new[] { "ID", "BookID", "LibrarianID", "RequestDate", "Status" },
+                table: "Classes",
+                columns: new[] { "ID", "CoachID", "Name", "TimeSlot" },
                 values: new object[,]
                 {
-                    { 1, 2, 1, new DateTime(2025, 11, 3, 21, 55, 7, 305, DateTimeKind.Local).AddTicks(6918), "Approved" },
-                    { 2, 3, 2, new DateTime(2025, 11, 3, 21, 55, 7, 308, DateTimeKind.Local).AddTicks(1976), "Pending" }
+                    { 1, 1, "Ранковий HIIT", "Пн 08:00" },
+                    { 2, 2, "Силова підготовка", "Вт 18:00" },
+                    { 3, 1, "Функціональний мікс", "Чт 19:30" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Bookings",
+                columns: new[] { "ID", "ClassID", "ClientName", "CoachID", "Status" },
+                values: new object[,]
+                {
+                    { 1, 2, "Анна", 1, "Confirmed" },
+                    { 2, 3, "Петро", 2, "Pending" }
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_BorrowRequests_BookID",
-                table: "BorrowRequests",
-                column: "BookID");
+                name: "IX_Bookings_ClassID",
+                table: "Bookings",
+                column: "ClassID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BorrowRequests_LibrarianID",
-                table: "BorrowRequests",
-                column: "LibrarianID");
+                name: "IX_Bookings_CoachID",
+                table: "Bookings",
+                column: "CoachID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Classes_CoachID",
+                table: "Classes",
+                column: "CoachID");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BorrowRequests");
+                name: "Bookings");
 
             migrationBuilder.DropTable(
-                name: "Books");
+                name: "Classes");
 
             migrationBuilder.DropTable(
-                name: "Librarians");
+                name: "Coaches");
         }
     }
 }

@@ -33,13 +33,13 @@ namespace ServerApp.Controllers.Api
                 return ValidationProblem(ModelState);
             }
 
-            var librarian = await _context.Librarians.FirstOrDefaultAsync(l => l.Email == request.Email);
-            if (librarian == null)
+            var coach = await _context.Coaches.FirstOrDefaultAsync(l => l.Email == request.Email);
+            if (coach == null)
             {
                 return Unauthorized("Invalid email or password.");
             }
 
-            var isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, librarian.PasswordHash);
+            var isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, coach.PasswordHash);
             if (!isPasswordValid)
             {
                 return Unauthorized("Invalid email or password.");
@@ -52,9 +52,9 @@ namespace ServerApp.Controllers.Api
 
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, librarian.ID.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, librarian.Email),
-                new Claim(ClaimTypes.Name, librarian.Name)
+                new Claim(JwtRegisteredClaimNames.Sub, coach.ID.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, coach.Email),
+                new Claim(ClaimTypes.Name, coach.Name)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
