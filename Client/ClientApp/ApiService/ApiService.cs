@@ -41,24 +41,24 @@ namespace ClientApp.Services
             return (true, null);
         }
 
-        public async Task<IReadOnlyList<Book>> GetBooksAsync()
+        public async Task<IReadOnlyList<TrainingClass>> GetClassesAsync()
         {
             EnsureAuthorizationHeader();
-            var response = await _httpClient.GetAsync("api/items");
+            var response = await _httpClient.GetAsync("api/classes");
             await EnsureSuccessStatusCodeAsync(response);
 
-            var books = await response.Content.ReadFromJsonAsync<List<Book>>();
-            return books ?? new List<Book>();
+            var classes = await response.Content.ReadFromJsonAsync<List<TrainingClass>>();
+            return classes ?? new List<TrainingClass>();
         }
 
-        public async Task CreateBorrowRequestAsync(BorrowRequest request)
+        public async Task CreateBookingAsync(Booking request)
         {
             EnsureAuthorizationHeader();
-            var response = await _httpClient.PostAsJsonAsync("api/actions", request);
+            var response = await _httpClient.PostAsJsonAsync("api/bookings", request);
             await EnsureSuccessStatusCodeAsync(response);
         }
 
-        public int? GetLibrarianIdFromToken()
+        public int? GetCoachIdFromToken()
         {
             var token = Preferences.Get(TokenPreferenceKey, string.Empty);
             if (string.IsNullOrWhiteSpace(token))
@@ -78,9 +78,9 @@ namespace ClientApp.Services
 
             using var document = JsonDocument.Parse(payloadJson);
             if (document.RootElement.TryGetProperty("sub", out var subElement) &&
-                int.TryParse(subElement.GetString(), out var librarianId))
+                int.TryParse(subElement.GetString(), out var coachId))
             {
-                return librarianId;
+                return coachId;
             }
 
             return null;

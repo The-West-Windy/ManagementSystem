@@ -1,5 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -11,22 +9,23 @@ using ServerApp.Models;
 namespace ServerApp.Controllers
 {
     [Authorize]
-    public class LibrariansController : Controller
+    public class ClassesController : Controller
     {
         private readonly AppDbContext _context;
 
-        public LibrariansController(AppDbContext context)
+        public ClassesController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: Librarians
+        // GET: Classes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Librarians.ToListAsync());
+            var classes = _context.Classes.Include(t => t.Coach);
+            return View(await classes.ToListAsync());
         }
 
-        // GET: Librarians/Details/5
+        // GET: Classes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,39 +33,40 @@ namespace ServerApp.Controllers
                 return NotFound();
             }
 
-            var librarian = await _context.Librarians
+            var trainingClass = await _context.Classes
+                .Include(t => t.Coach)
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (librarian == null)
+            if (trainingClass == null)
             {
                 return NotFound();
             }
 
-            return View(librarian);
+            return View(trainingClass);
         }
 
-        // GET: Librarians/Create
+        // GET: Classes/Create
         public IActionResult Create()
         {
+            ViewData["CoachID"] = new SelectList(_context.Coaches, "ID", "Name");
             return View();
         }
 
-        // POST: Librarians/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Classes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Email,PasswordHash")] Librarian librarian)
+        public async Task<IActionResult> Create([Bind("ID,Name,CoachID,TimeSlot")] TrainingClass trainingClass)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(librarian);
+                _context.Add(trainingClass);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(librarian);
+            ViewData["CoachID"] = new SelectList(_context.Coaches, "ID", "Name", trainingClass.CoachID);
+            return View(trainingClass);
         }
 
-        // GET: Librarians/Edit/5
+        // GET: Classes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -74,22 +74,21 @@ namespace ServerApp.Controllers
                 return NotFound();
             }
 
-            var librarian = await _context.Librarians.FindAsync(id);
-            if (librarian == null)
+            var trainingClass = await _context.Classes.FindAsync(id);
+            if (trainingClass == null)
             {
                 return NotFound();
             }
-            return View(librarian);
+            ViewData["CoachID"] = new SelectList(_context.Coaches, "ID", "Name", trainingClass.CoachID);
+            return View(trainingClass);
         }
 
-        // POST: Librarians/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Classes/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Email,PasswordHash")] Librarian librarian)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,CoachID,TimeSlot")] TrainingClass trainingClass)
         {
-            if (id != librarian.ID)
+            if (id != trainingClass.ID)
             {
                 return NotFound();
             }
@@ -98,12 +97,12 @@ namespace ServerApp.Controllers
             {
                 try
                 {
-                    _context.Update(librarian);
+                    _context.Update(trainingClass);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!LibrarianExists(librarian.ID))
+                    if (!TrainingClassExists(trainingClass.ID))
                     {
                         return NotFound();
                     }
@@ -114,10 +113,11 @@ namespace ServerApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(librarian);
+            ViewData["CoachID"] = new SelectList(_context.Coaches, "ID", "Name", trainingClass.CoachID);
+            return View(trainingClass);
         }
 
-        // GET: Librarians/Delete/5
+        // GET: Classes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -125,34 +125,35 @@ namespace ServerApp.Controllers
                 return NotFound();
             }
 
-            var librarian = await _context.Librarians
+            var trainingClass = await _context.Classes
+                .Include(t => t.Coach)
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (librarian == null)
+            if (trainingClass == null)
             {
                 return NotFound();
             }
 
-            return View(librarian);
+            return View(trainingClass);
         }
 
-        // POST: Librarians/Delete/5
+        // POST: Classes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var librarian = await _context.Librarians.FindAsync(id);
-            if (librarian != null)
+            var trainingClass = await _context.Classes.FindAsync(id);
+            if (trainingClass != null)
             {
-                _context.Librarians.Remove(librarian);
+                _context.Classes.Remove(trainingClass);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool LibrarianExists(int id)
+        private bool TrainingClassExists(int id)
         {
-            return _context.Librarians.Any(e => e.ID == id);
+            return _context.Classes.Any(e => e.ID == id);
         }
     }
 }

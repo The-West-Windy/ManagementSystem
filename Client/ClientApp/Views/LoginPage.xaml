@@ -8,7 +8,7 @@
     <ScrollView>
         <VerticalStackLayout Padding="24" Spacing="16">
             <Label Text="Library Access" Style="{StaticResource Headline}" />
-            <Label Text="Sign in as librarian to manage borrow requests." Style="{StaticResource SubHeadline}" />
+            <Label Text="Sign in as a coach to manage class bookings." Style="{StaticResource SubHeadline}" />
 
             <Entry Placeholder="Email" Keyboard="Email" Text="{Binding Email}" />
             <Entry Placeholder="Password" IsPassword="True" Text="{Binding Password}" />

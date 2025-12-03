@@ -1,32 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ServerApp.Models;
 
 namespace ServerApp.Controllers
 {
     [Authorize]
-    public class BooksController : Controller
+    public class CoachesController : Controller
     {
         private readonly AppDbContext _context;
 
-        public BooksController(AppDbContext context)
+        public CoachesController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: Books
+        // GET: Coaches
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Books.ToListAsync());
+            return View(await _context.Coaches.ToListAsync());
         }
 
-        // GET: Books/Details/5
+        // GET: Coaches/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,39 +31,37 @@ namespace ServerApp.Controllers
                 return NotFound();
             }
 
-            var book = await _context.Books
+            var coach = await _context.Coaches
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (book == null)
+            if (coach == null)
             {
                 return NotFound();
             }
 
-            return View(book);
+            return View(coach);
         }
 
-        // GET: Books/Create
+        // GET: Coaches/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Books/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Coaches/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Title,Author,Status")] Book book)
+        public async Task<IActionResult> Create([Bind("ID,Name,Email,PasswordHash")] Coach coach)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(book);
+                _context.Add(coach);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(book);
+            return View(coach);
         }
 
-        // GET: Books/Edit/5
+        // GET: Coaches/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -74,22 +69,20 @@ namespace ServerApp.Controllers
                 return NotFound();
             }
 
-            var book = await _context.Books.FindAsync(id);
-            if (book == null)
+            var coach = await _context.Coaches.FindAsync(id);
+            if (coach == null)
             {
                 return NotFound();
             }
-            return View(book);
+            return View(coach);
         }
 
-        // POST: Books/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Coaches/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Title,Author,Status")] Book book)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Email,PasswordHash")] Coach coach)
         {
-            if (id != book.ID)
+            if (id != coach.ID)
             {
                 return NotFound();
             }
@@ -98,12 +91,12 @@ namespace ServerApp.Controllers
             {
                 try
                 {
-                    _context.Update(book);
+                    _context.Update(coach);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BookExists(book.ID))
+                    if (!CoachExists(coach.ID))
                     {
                         return NotFound();
                     }
@@ -114,10 +107,10 @@ namespace ServerApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(book);
+            return View(coach);
         }
 
-        // GET: Books/Delete/5
+        // GET: Coaches/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -125,34 +118,34 @@ namespace ServerApp.Controllers
                 return NotFound();
             }
 
-            var book = await _context.Books
+            var coach = await _context.Coaches
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (book == null)
+            if (coach == null)
             {
                 return NotFound();
             }
 
-            return View(book);
+            return View(coach);
         }
 
-        // POST: Books/Delete/5
+        // POST: Coaches/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var book = await _context.Books.FindAsync(id);
-            if (book != null)
+            var coach = await _context.Coaches.FindAsync(id);
+            if (coach != null)
             {
-                _context.Books.Remove(book);
+                _context.Coaches.Remove(coach);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BookExists(int id)
+        private bool CoachExists(int id)
         {
-            return _context.Books.Any(e => e.ID == id);
+            return _context.Coaches.Any(e => e.ID == id);
         }
     }
 }
