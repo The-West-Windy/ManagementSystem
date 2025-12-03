@@ -21,7 +21,7 @@ namespace ClientApp.ViewModels
         public LoginViewModel(ApiService apiService)
         {
             _apiService = apiService;
-            Title = "Librarian Login";
+            Title = "Coach Login";
         }
 
         [RelayCommand]

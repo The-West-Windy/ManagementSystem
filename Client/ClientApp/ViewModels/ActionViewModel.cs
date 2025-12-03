@@ -6,20 +6,32 @@ using ClientApp.Views;
 
 namespace ClientApp.ViewModels
 {
-    [QueryProperty(nameof(BookTitle), nameof(BookTitle))]
-    [QueryProperty(nameof(BookId), nameof(BookId))]
+    [QueryProperty(nameof(ClassName), nameof(ClassName))]
+    [QueryProperty(nameof(ClassId), nameof(ClassId))]
+    [QueryProperty(nameof(CoachId), nameof(CoachId))]
+    [QueryProperty(nameof(CoachName), nameof(CoachName))]
+    [QueryProperty(nameof(TimeSlot), nameof(TimeSlot))]
     public partial class ActionViewModel : BaseViewModel
     {
         private readonly ApiService _apiService;
 
         [ObservableProperty]
-        private string bookTitle = string.Empty;
+        private string className = string.Empty;
 
         [ObservableProperty]
-        private int bookId;
+        private int classId;
 
         [ObservableProperty]
-        private string borrowerName = string.Empty;
+        private int coachId;
+
+        [ObservableProperty]
+        private string coachName = string.Empty;
+
+        [ObservableProperty]
+        private string timeSlot = string.Empty;
+
+        [ObservableProperty]
+        private string clientName = string.Empty;
 
         [ObservableProperty]
         private string notes = string.Empty;
@@ -30,7 +42,7 @@ namespace ClientApp.ViewModels
         public ActionViewModel(ApiService apiService)
         {
             _apiService = apiService;
-            Title = "Borrow Request";
+            Title = "Booking";
         }
 
         [RelayCommand]
@@ -46,20 +58,20 @@ namespace ClientApp.ViewModels
                 IsBusy = true;
                 StatusMessage = string.Empty;
 
-                if (BookId <= 0)
+                if (ClassId <= 0)
                 {
-                    StatusMessage = "Book information is missing.";
+                    StatusMessage = "Class information is missing.";
                     return;
                 }
 
-                if (string.IsNullOrWhiteSpace(BorrowerName))
+                if (string.IsNullOrWhiteSpace(ClientName))
                 {
-                    StatusMessage = "Please provide a borrower name.";
+                    StatusMessage = "Please provide a client name.";
                     return;
                 }
 
-                var librarianId = _apiService.GetLibrarianIdFromToken();
-                if (librarianId is null)
+                var coachIdFromToken = _apiService.GetCoachIdFromToken();
+                if (coachIdFromToken is null)
                 {
                     StatusMessage = "Session expired. Please log in again.";
                     await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
@@ -67,20 +79,18 @@ namespace ClientApp.ViewModels
                 }
 
                 var statusText = string.IsNullOrWhiteSpace(Notes) ? "Pending" : Notes.Trim();
-                statusText = string.IsNullOrWhiteSpace(BorrowerName)
-                    ? statusText
-                    : $"{statusText} ({BorrowerName.Trim()})";
 
-                var request = new BorrowRequest
+                var request = new Booking
                 {
-                    BookID = BookId,
-                    LibrarianID = librarianId.Value,
+                    ClassID = ClassId,
+                    CoachID = coachIdFromToken.Value,
+                    ClientName = ClientName.Trim(),
                     Status = statusText
                 };
 
-                await _apiService.CreateBorrowRequestAsync(request);
-                StatusMessage = $"Borrow request for '{BookTitle}' submitted.";
-                await Shell.Current.DisplayAlert("Borrow Request", StatusMessage, "OK");
+                await _apiService.CreateBookingAsync(request);
+                StatusMessage = $"Booking for '{ClassName}' submitted.";
+                await Shell.Current.DisplayAlert("Booking", StatusMessage, "OK");
                 await Shell.Current.GoToAsync("..", true);
             }
             catch (UnauthorizedAccessException)

@@ -1,0 +1,24 @@
+@model ServerApp.Models.TrainingClass
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Class Details";
+}
+
+<h2>Class Details</h2>
+
+<dl class="row">
+    <dt class="col-sm-3">Name</dt>
+    <dd class="col-sm-9">@Model.Name</dd>
+
+    <dt class="col-sm-3">Coach</dt>
+    <dd class="col-sm-9">@Model.Coach?.Name</dd>
+
+    <dt class="col-sm-3">Time Slot</dt>
+    <dd class="col-sm-9">@Model.TimeSlot</dd>
+</dl>
+
+<p>
+    <a class="btn btn-warning" href="@Url.Action("Edit", new { id = Model.ID })">Edit</a>
+    <a class="btn btn-secondary" href="@Url.Action("Index")">Back to list</a>
+</p>

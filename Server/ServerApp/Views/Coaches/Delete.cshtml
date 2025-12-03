@@ -1,17 +1,16 @@
-﻿@model ServerApp.Models.Book
+﻿@model ServerApp.Models.Coach
 
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "Delete Book";
+    ViewData["Title"] = "Delete Coach";
 }
 
-<h2>Delete Book</h2>
+<h2>Delete Coach</h2>
 
-<h4>Are you sure you want to delete this book?</h4>
+<h4>Are you sure you want to delete this librarian?</h4>
 <div>
-    <h5>@Model.Title</h5>
-    <p>Author: @Model.Author</p>
-    <p>Status: @Model.Status</p>
+    <h5>@Model.Name</h5>
+    <p>Email: @Model.Email</p>
 </div>
 
 <form asp-action="Delete" method="post">

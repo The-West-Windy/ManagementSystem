@@ -1,0 +1,28 @@
+@model ServerApp.Models.TrainingClass
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Edit Class";
+}
+
+<h2>Edit Class</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="ID" />
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="CoachID" class="form-label">Coach</label>
+        <select asp-for="CoachID" asp-items="(IEnumerable<SelectListItem>)ViewData[\"CoachID\"]" class="form-select"></select>
+    </div>
+    <div class="mb-3">
+        <label asp-for="TimeSlot" class="form-label"></label>
+        <input asp-for="TimeSlot" class="form-control" />
+        <span asp-validation-for="TimeSlot" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index")">Back to list</a>
+</form>

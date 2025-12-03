@@ -6,27 +6,27 @@
              x:Class="ClientApp.Views.ItemsPage"
              x:Name="Page"
              x:DataType="viewModels:ItemsViewModel"
-             Title="Books">
+             Title="Classes">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="New Request" Command="{Binding NavigateToCreateActionCommand}" />
+        <ToolbarItem Text="New Booking" Command="{Binding NavigateToCreateActionCommand}" />
         <ToolbarItem Text="Refresh" Command="{Binding LoadItemsCommand}" />
     </ContentPage.ToolbarItems>
 
     <RefreshView Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy}">
         <Grid RowDefinitions="Auto,Auto">
-            <CollectionView Grid.Row="0" ItemsSource="{Binding Books}" SelectionMode="None" Margin="12">
+            <CollectionView Grid.Row="0" ItemsSource="{Binding Classes}" SelectionMode="None" Margin="12">
                 <CollectionView.EmptyView>
-                    <Label Text="No books available." HorizontalTextAlignment="Center" />
+                    <Label Text="No classes available." HorizontalTextAlignment="Center" />
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Book">
+                    <DataTemplate x:DataType="models:TrainingClass">
                         <Frame Padding="12" Margin="0,6" CornerRadius="10" BorderColor="#e0e0e0">
                             <VerticalStackLayout Spacing="4">
-                                <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold" />
-                                <Label Text="{Binding Author}" FontAttributes="Italic" />
-                                <Label Text="{Binding Status}" TextColor="Gray" />
+                                <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
+                                <Label Text="{Binding CoachName}" FontAttributes="Italic" />
+                                <Label Text="{Binding TimeSlot}" TextColor="Gray" />
                                 <Label Text="{Binding Description}" LineBreakMode="WordWrap" />
-                                <Button Text="Create Borrow Request"
+                                <Button Text="Book this class"
                                         Command="{Binding BindingContext.NavigateToCreateActionCommand, Source={x:Reference Page}}"
                                         CommandParameter="{Binding .}" />
                             </VerticalStackLayout>

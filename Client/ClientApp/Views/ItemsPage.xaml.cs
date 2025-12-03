@@ -17,7 +17,7 @@ namespace ClientApp.Views
         {
             base.OnAppearing();
 
-            if (!_viewModel.Books.Any())
+            if (!_viewModel.Classes.Any())
             {
                 await _viewModel.LoadItemsAsync();
             }

@@ -15,15 +15,15 @@ namespace ClientApp.ViewModels
         private readonly ApiService _apiService;
 
         /// <summary>
-        /// Кешований список книжок, спільний для всіх екземплярів ViewModel.
+        /// Кешований список занять, спільний для всіх екземплярів ViewModel.
         /// Заповнюється при першому успішному запиті до API.
         /// </summary>
-        private static List<Book>? _cachedBooks;
+        private static List<TrainingClass>? _cachedClasses;
 
         /// <summary>
         /// Колекція для прив'язки до UI (ListView/CollectionView).
         /// </summary>
-        public ObservableCollection<Book> Books { get; } = new();
+        public ObservableCollection<TrainingClass> Classes { get; } = new();
 
         [ObservableProperty]
         private string statusMessage = string.Empty;
@@ -31,12 +31,12 @@ namespace ClientApp.ViewModels
         public ItemsViewModel(ApiService apiService)
         {
             _apiService = apiService;
-            Title = "Library Catalog";
+            Title = "Training Schedule";
         }
 
         /// <summary>
-        /// Завантаження списку книжок.
-        /// Спочатку намагається використати кеш (_cachedBooks),
+        /// Завантаження списку занять.
+        /// Спочатку намагається використати кеш (_cachedClasses),
         /// при його відсутності робить запит до API та оновлює кеш.
         /// </summary>
         [RelayCommand]
@@ -51,31 +51,31 @@ namespace ClientApp.ViewModels
             {
                 IsBusy = true;
                 StatusMessage = string.Empty;
-                Books.Clear();
+                Classes.Clear();
 
                 // Якщо в нас уже є кешовані дані – використовуємо їх, без запиту до API
-                if (_cachedBooks is not null && _cachedBooks.Count > 0)
+                if (_cachedClasses is not null && _cachedClasses.Count > 0)
                 {
-                    foreach (var book in _cachedBooks)
+                    foreach (var trainingClass in _cachedClasses)
                     {
-                        Books.Add(book);
+                        Classes.Add(trainingClass);
                     }
 
                     // За бажанням можна показати повідомлення:
-                    // StatusMessage = "Books loaded from cache.";
+                    // StatusMessage = "Classes loaded from cache.";
                     return;
                 }
 
                 // Кешу ще немає – вантажимо з API
-                var books = await _apiService.GetBooksAsync();
+                var classes = await _apiService.GetClassesAsync();
 
                 // Оновлюємо кеш
-                _cachedBooks = books.ToList();
+                _cachedClasses = classes.ToList();
 
                 // Заповнюємо ObservableCollection для UI
-                foreach (var book in _cachedBooks)
+                foreach (var trainingClass in _cachedClasses)
                 {
-                    Books.Add(book);
+                    Classes.Add(trainingClass);
                 }
             }
             catch (UnauthorizedAccessException)
@@ -85,7 +85,7 @@ namespace ClientApp.ViewModels
             }
             catch (Exception ex)
             {
-                StatusMessage = $"Failed to load books: {ex.Message}";
+                StatusMessage = $"Failed to load classes: {ex.Message}";
             }
             finally
             {
@@ -94,15 +94,18 @@ namespace ClientApp.ViewModels
         }
 
         /// <summary>
-        /// Перехід на сторінку створення дії (BorrowRequest) з передачею вибраної книжки.
+        /// Перехід на сторінку створення бронювання з передачею вибраного заняття.
         /// </summary>
         [RelayCommand]
-        private async Task NavigateToCreateActionAsync(Book? book)
+        private async Task NavigateToCreateActionAsync(TrainingClass? trainingClass)
         {
             var query = new Dictionary<string, object?>
             {
-                ["BookTitle"] = book?.Title ?? string.Empty,
-                ["BookId"] = book?.Id ?? 0
+                ["ClassName"] = trainingClass?.Name ?? string.Empty,
+                ["ClassId"] = trainingClass?.Id ?? 0,
+                ["CoachId"] = trainingClass?.CoachID ?? 0,
+                ["CoachName"] = trainingClass?.CoachName ?? string.Empty,
+                ["TimeSlot"] = trainingClass?.TimeSlot ?? string.Empty
             };
 
             await Shell.Current.GoToAsync(nameof(ActionPage), query);
@@ -114,7 +117,7 @@ namespace ClientApp.ViewModels
         /// </summary>
         public static void ClearCache()
         {
-            _cachedBooks = null;
+            _cachedClasses = null;
         }
     }
 }
