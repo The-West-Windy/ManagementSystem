@@ -10,11 +10,11 @@
 <form asp-action="Create" method="post">
     <div class="mb-3">
         <label asp-for="ClassID" class="form-label">Class</label>
-        <select asp-for="ClassID" asp-items="(IEnumerable<SelectListItem>)ViewData[\"ClassID\"]" class="form-select"></select>
+        <select asp-for="ClassID" asp-items="ViewBag.ClassID" class="form-select"></select>
     </div>
     <div class="mb-3">
         <label asp-for="CoachID" class="form-label">Coach</label>
-        <select asp-for="CoachID" asp-items="(IEnumerable<SelectListItem>)ViewData[\"CoachID\"]" class="form-select"></select>
+        <select asp-for="CoachID" asp-items="ViewBag.CoachID" class="form-select"></select>
     </div>
     <div class="mb-3">
         <label asp-for="ClientName" class="form-label"></label>

@@ -15,7 +15,7 @@
     </div>
     <div class="mb-3">
         <label asp-for="CoachID" class="form-label">Coach</label>
-        <select asp-for="CoachID" asp-items="(IEnumerable<SelectListItem>)ViewData[\"CoachID\"]" class="form-select"></select>
+        <select asp-for="CoachID" asp-items="ViewBag.CoachID" class="form-select"></select>
     </div>
     <div class="mb-3">
         <label asp-for="TimeSlot" class="form-label"></label>
