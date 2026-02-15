@@ -4,14 +4,16 @@
              xmlns:viewModels="clr-namespace:ClientApp.ViewModels"
              x:Class="ClientApp.Views.ActionPage"
              x:DataType="viewModels:ActionViewModel"
-             Title="Borrow Request">
+             Title="Booking">
     <ScrollView>
         <VerticalStackLayout Padding="24" Spacing="12">
-            <Label Text="Create Borrow Request" Style="{StaticResource Headline}" />
-            <Label Text="Provide the details to let readers borrow a book." Style="{StaticResource SubHeadline}" />
+            <Label Text="Create Booking" Style="{StaticResource Headline}" />
+            <Label Text="Reserve a spot in the selected class." Style="{StaticResource SubHeadline}" />
 
-            <Entry Placeholder="Book title" Text="{Binding BookTitle}" IsReadOnly="True" />
-            <Entry Placeholder="Borrower name" Text="{Binding BorrowerName}" />
+            <Entry Placeholder="Class name" Text="{Binding ClassName}" IsReadOnly="True" />
+            <Entry Placeholder="Coach" Text="{Binding CoachName}" IsReadOnly="True" />
+            <Entry Placeholder="Time slot" Text="{Binding TimeSlot}" IsReadOnly="True" />
+            <Entry Placeholder="Client name" Text="{Binding ClientName}" />
             <Editor Placeholder="Notes" HeightRequest="120" Text="{Binding Notes}" />
 
             <Button Text="Submit" Command="{Binding SubmitCommand}" />

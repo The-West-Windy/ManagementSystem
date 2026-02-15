@@ -1,0 +1,27 @@
+@model ServerApp.Models.Booking
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Booking Details";
+}
+
+<h2>Booking Details</h2>
+
+<dl class="row">
+    <dt class="col-sm-3">Class</dt>
+    <dd class="col-sm-9">@Model.Class?.Name</dd>
+
+    <dt class="col-sm-3">Coach</dt>
+    <dd class="col-sm-9">@Model.Coach?.Name</dd>
+
+    <dt class="col-sm-3">Client</dt>
+    <dd class="col-sm-9">@Model.ClientName</dd>
+
+    <dt class="col-sm-3">Status</dt>
+    <dd class="col-sm-9">@Model.Status</dd>
+</dl>
+
+<p>
+    <a class="btn btn-warning" href="@Url.Action("Edit", new { id = Model.ID })">Edit</a>
+    <a class="btn btn-secondary" href="@Url.Action("Index")">Back to list</a>
+</p>

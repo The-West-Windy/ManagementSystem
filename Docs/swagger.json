@@ -1,291 +1,98 @@
 {
   "openapi": "3.0.4",
   "info": {
-    "title": "ServerApp",
+    "title": "Sports Training Management API",
     "version": "1.0"
   },
   "paths": {
-    "/api/Actions": {
+    "/api/auth/login": {
       "post": {
-        "tags": [
-          "Actions"
-        ],
+        "tags": ["Auth"],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BorrowRequestDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BorrowRequestDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/BorrowRequestDto"
-              }
+              "schema": { "$ref": "#/components/schemas/LoginRequestDto" }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "OK"
-          }
+          "200": { "description": "JWT token returned" }
         }
       }
     },
-    "/auth/login": {
+    "/api/classes": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Classes"],
         "responses": {
           "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "parameters": [
-          {
-            "name": "username",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "password",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Auth/login": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginRequestDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginRequestDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginRequestDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Items": {
-      "get": {
-        "tags": [
-          "Items"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
+            "description": "List of classes",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Book"
-                  }
-                }
-              },
               "application/json": {
                 "schema": {
                   "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Book"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Book"
-                  }
+                  "items": { "$ref": "#/components/schemas/TrainingClass" }
                 }
               }
             }
           }
+        }
+      }
+    },
+    "/api/bookings": {
+      "post": {
+        "tags": ["Bookings"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/BookingDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Booking created" }
         }
       }
     }
   },
   "components": {
     "schemas": {
-      "Book": {
+      "BookingDto": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "title": {
-            "type": "string",
-            "nullable": true
-          },
-          "author": {
-            "type": "string",
-            "nullable": true
-          },
-          "status": {
-            "type": "string",
-            "nullable": true
-          },
-          "borrowRequests": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/BorrowRequest"
-            },
-            "nullable": true
-          }
+          "coachID": { "type": "integer", "format": "int32" },
+          "classID": { "type": "integer", "format": "int32" },
+          "clientName": { "type": "string" },
+          "status": { "type": "string" }
         },
-        "additionalProperties": false
+        "required": ["coachID", "classID", "clientName", "status"]
       },
-      "BorrowRequest": {
+      "TrainingClass": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "librarianID": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "bookID": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "requestDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "status": {
-            "type": "string",
-            "nullable": true
-          },
-          "librarian": {
-            "$ref": "#/components/schemas/Librarian"
-          },
-          "book": {
-            "$ref": "#/components/schemas/Book"
+          "id": { "type": "integer", "format": "int32" },
+          "name": { "type": "string" },
+          "coachID": { "type": "integer", "format": "int32" },
+          "timeSlot": { "type": "string" },
+          "coach": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "integer", "format": "int32" },
+              "name": { "type": "string" },
+              "email": { "type": "string" }
+            }
           }
-        },
-        "additionalProperties": false
-      },
-      "BorrowRequestDto": {
-        "type": "object",
-        "properties": {
-          "librarianID": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "bookID": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "status": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "Librarian": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "email": {
-            "type": "string",
-            "nullable": true
-          },
-          "passwordHash": {
-            "type": "string",
-            "nullable": true
-          },
-          "borrowRequests": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/BorrowRequest"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
+        }
       },
       "LoginRequestDto": {
-        "required": [
-          "email",
-          "password"
-        ],
         "type": "object",
         "properties": {
-          "email": {
-            "minLength": 1,
-            "type": "string",
-            "format": "email"
-          },
-          "password": {
-            "minLength": 1,
-            "type": "string"
-          }
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string" }
         },
-        "additionalProperties": false
-      }
-    },
-    "securitySchemes": {
-      "Bearer": {
-        "type": "http",
-        "description": "Введіть JWT-токен у форматі Bearer {token} для авторизації у Swagger UI.",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
+        "required": ["email", "password"]
       }
     }
-  },
-  "security": [
-    {
-      "Bearer": [ ]
-    }
-  ]
+  }
 }

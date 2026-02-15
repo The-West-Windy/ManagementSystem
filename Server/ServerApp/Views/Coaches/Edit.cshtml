@@ -1,13 +1,15 @@
-﻿@model ServerApp.Models.Librarian
+﻿@model ServerApp.Models.Coach
 
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "Add Librarian";
+    ViewData["Title"] = "Edit Coach";
 }
 
-<h2>Add Librarian</h2>
+<h2>Edit Coach</h2>
 
-<form asp-action="Create" method="post">
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="ID" />
+
     <div class="mb-3">
         <label asp-for="Name" class="form-label"></label>
         <input asp-for="Name" class="form-control" />
